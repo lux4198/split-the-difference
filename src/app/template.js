@@ -42,7 +42,7 @@ function Template({ children }) {
         </Flex>
       </Flex>
       <CreateGroupModal modalRef={modalRef} opened={opened} close={close}>
-        <CreateGroupForm />
+        <CreateGroupForm close={close} />
       </CreateGroupModal>
       {children}
       {/* <div className={"bg-wave"}>

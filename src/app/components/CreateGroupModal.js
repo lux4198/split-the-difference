@@ -17,7 +17,7 @@ function CreateGroupModal({ opened, close, children, modalRef }) {
       <div
         ref={modalRef}
         className={
-          `m-auto inset-0 w-fit fixed h-fit z-20 p-10 rounded-sm ` +
+          `m-auto inset-0 w-fit max-w-[700px] fixed h-fit z-20 p-10 rounded-sm ` +
           (opened ? "visible" : "invisible")
         }
       >
