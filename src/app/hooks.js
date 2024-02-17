@@ -31,3 +31,23 @@ export const useOutsideAlerter = (ref, fire, handler) => {
     };
   });
 };
+
+// calls handler on esc click
+export const useEscClose = (fire, handler) => {
+  useEffect(() => {
+    /**
+     * Call handler if esc is clicked
+     */
+    function handleClickOutside(event) {
+      if (fire && event.keyCode === 27) {
+        handler();
+      }
+    }
+    // Bind the event listener
+    document.addEventListener("keydown", handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener("keydown", handleClickOutside);
+    };
+  });
+};

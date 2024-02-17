@@ -2,7 +2,7 @@
 
 import { Button, Flex, useMantineTheme } from "@mantine/core";
 import { IconMoon, IconSun } from "@tabler/icons-react";
-import { useColorScheme } from "./hooks";
+import { useColorScheme, useEscClose } from "./hooks";
 import { useDisclosure } from "@mantine/hooks";
 import CreateGroupModal from "./components/CreateGroupModal";
 import CreateGroupForm from "./components/CreateGroupForm";
@@ -14,6 +14,7 @@ function Template({ children }) {
   const [opened, { close, toggle }] = useDisclosure(false);
   const modalRef = useRef(null);
   useOutsideAlerter(modalRef, opened, close);
+  useEscClose(opened, close);
 
   const dark = colorScheme === "dark";
   return (
