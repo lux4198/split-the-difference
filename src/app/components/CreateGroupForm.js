@@ -4,12 +4,16 @@ import React, { useState } from "react";
 import { useForm } from "@mantine/form";
 import { TextInput, Button, Grid, PasswordInput, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { useRouter } from "next/navigation";
 
 export default function CreateGroupForm({ onSubmit, close }) {
   const [visible, { toggle }] = useDisclosure(false);
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState(false);
+  const [pwErr, setPwErr] = useState(false);
+  const [postErr, setPostErr] = useState(false);
+  const [msg, setMsg] = useState("");
   const form = useForm();
+  const router = useRouter();
 
   const handleSubmit = (values) => {
     setLoading(true);
@@ -17,14 +21,40 @@ export default function CreateGroupForm({ onSubmit, close }) {
     const pw = values.password;
     const confPW = values.confirmPassword;
     if (pw !== confPW) {
-      setErr(true);
+      setPwErr(true);
       setLoading(false);
       return;
     }
     // Call onSubmit callback with form data
-    console.log(values);
+    const fetchData = async () => {
+      const response = await fetch("/api/group/new/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      const res = await response.json();
+      if (res.code !== "") {
+        setPostErr(res.code);
+      }
+      if (res.status === "success") {
+        router.push("/group/");
+      }
+    };
+
+    fetchData();
 
     setLoading(false);
+  };
+
+  const getErrMsgFromCode = (code) => {
+    let msg = "";
+    if (code === "P2002") {
+      msg = "Group name already taken.";
+    }
+
+    return msg;
   };
 
   return (
@@ -37,6 +67,7 @@ export default function CreateGroupForm({ onSubmit, close }) {
               label="Group Name"
               placeholder="Enter group name"
               {...form.getInputProps("name")}
+              error={postErr !== "" ? getErrMsgFromCode(postErr) : false}
             />
           </Grid.Col>
           <Grid.Col span={12}>
@@ -56,8 +87,8 @@ export default function CreateGroupForm({ onSubmit, close }) {
               visible={visible}
               onVisibilityChange={toggle}
               {...form.getInputProps("password")}
-              error={err ? "Passwords do not match." : false}
-              onInput={() => setErr(false)}
+              error={pwErr ? "Passwords do not match." : false}
+              onInput={() => setPwErr(false)}
             />
           </Grid.Col>
           <Grid.Col span={6}>
@@ -68,8 +99,8 @@ export default function CreateGroupForm({ onSubmit, close }) {
               visible={visible}
               onVisibilityChange={toggle}
               {...form.getInputProps("confirmPassword")}
-              error={err}
-              onInput={() => setErr(false)}
+              error={pwErr}
+              onInput={() => setPwErr(false)}
             />
           </Grid.Col>
           <Grid.Col span={12}>
