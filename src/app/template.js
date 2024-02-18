@@ -6,11 +6,13 @@ import { useColorScheme, useEscClose } from "./hooks";
 import { useDisclosure } from "@mantine/hooks";
 import CreateGroupModal from "./components/CreateGroupModal";
 import CreateGroupForm from "./components/CreateGroupForm";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOutsideAlerter } from "./hooks";
+import LoginForm from "./components/LoginForm";
 
 function Template({ children }) {
   const [colorScheme, toggleColorScheme] = useColorScheme();
+  const [signUp, setSignUp] = useState(true);
   const [opened, { close, toggle }] = useDisclosure(false);
   const modalRef = useRef(null);
   useOutsideAlerter(modalRef, opened, close);
@@ -26,7 +28,21 @@ function Template({ children }) {
             variant="filled"
             radius={"xs"}
             className={"mr-4"}
-            onClick={toggle}
+            onClick={() => {
+              setSignUp(false);
+              toggle();
+            }}
+          >
+            Login
+          </Button>
+          <Button
+            variant="filled"
+            radius={"xs"}
+            className={"mr-4"}
+            onClick={() => {
+              setSignUp(true);
+              toggle();
+            }}
           >
             Create Group
           </Button>
@@ -42,7 +58,7 @@ function Template({ children }) {
         </Flex>
       </Flex>
       <CreateGroupModal modalRef={modalRef} opened={opened} close={close}>
-        <CreateGroupForm close={close} />
+        {signUp ? <CreateGroupForm close={close} /> : <LoginForm />}
       </CreateGroupModal>
       {children}
     </main>

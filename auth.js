@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -35,7 +35,7 @@ export const { auth, signIn, signOut } = NextAuth({
           if (!group) return null;
           const passwordsMatch = await bcrypt.compare(password, group.password);
 
-          if (passwordsMatch) return user;
+          if (passwordsMatch) return group;
         }
 
         console.log("Invalid credentials");
