@@ -16,26 +16,31 @@ model test {
 }
 
 model Group {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name     String   @db.VarChar(100)
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  name      String    @db.VarChar(100)
+  password String @db.VarChar(100)
+  email String @db.VarChar(100)
   members   Member[]
+  Expense   Expense[]
 }
 
 model Member {
-  id     Int     @id @default(autoincrement())
-  name     String   @db.VarChar(100)
-  groupId Int     
+  id      Int    @id @default(autoincrement())
+  name    String @db.VarChar(100)
+  groupId Int
 
-  group   Group    @relation(fields: [groupId], references: [id])
-  expenses  Expense[] @relation("MemberExpenses")
+  group    Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  expenses Expense[] @relation("MemberExpenses")
 }
 
 model Expense {
-  id      Int      @id @default(autoincrement())
-  name    String?  @db.VarChar(255)
-  value   Float   
+  id      Int     @id @default(autoincrement())
+  name    String? @db.VarChar(255)
+  value   Float
+  groupId Int
+  group   Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
-  members    Member[] @relation("MemberExpenses")
+  members Member[] @relation("MemberExpenses")
 }
