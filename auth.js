@@ -1,3 +1,5 @@
+"use server";
+
 import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 import Credentials from "next-auth/providers/credentials";
@@ -35,10 +37,11 @@ export const { auth, signIn, signOut } = NextAuth({
           if (!group) return null;
           const passwordsMatch = await bcrypt.compare(password, group.password);
 
-          if (passwordsMatch) return group;
+          if (passwordsMatch) {
+            return group;
+          }
         }
 
-        console.log("Invalid credentials");
         return null;
       },
     }),

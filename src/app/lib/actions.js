@@ -4,16 +4,15 @@ import { signIn } from "@/../auth";
 import { AuthError } from "next-auth";
 
 export async function authenticate(prevState, formData) {
-  console.log(formData);
   try {
     await signIn("credentials", formData);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return "Invalid credentials.";
+          return { status: "failed", msg: "Invalid Username or Password." };
         default:
-          return "Something went wrong.";
+          return { status: "failed", msg: "Something went wrong." };
       }
     }
     throw error;
