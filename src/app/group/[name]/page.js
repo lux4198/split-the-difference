@@ -19,7 +19,7 @@ function Page() {
     fetchData();
   }, []);
 
-  console.log(session);
+  console.log(session, status);
   return (
     <>
       <h2>Group Page</h2>

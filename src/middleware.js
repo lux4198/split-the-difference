@@ -8,7 +8,6 @@ export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
   const isOnGroup = nextUrl.pathname.startsWith("/group");
-  console.log("middleware:", isOnGroup, isLoggedIn);
   if (isOnGroup && !isLoggedIn) {
     return Response.redirect(new URL("/", nextUrl));
   }
