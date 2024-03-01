@@ -1,13 +1,7 @@
-"use server";
-
-import NextAuth from "next-auth";
-import { authConfig } from "./auth.config";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "./app/lib/db";
 
 async function getGroup(name) {
   try {
@@ -23,8 +17,7 @@ async function getGroup(name) {
   }
 }
 
-export const { auth, signIn, signOut } = NextAuth({
-  ...authConfig,
+export const authConfig = {
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -46,4 +39,4 @@ export const { auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-});
+};

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { useForm } from "@mantine/form";
 import { TextInput, Button, Grid, PasswordInput, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -14,23 +14,31 @@ function LoginForm() {
   const [loginStatus, setLoginStatus] = useState({
     status: "idle",
   });
+  const [isPending, startTransition] = useTransition();
 
   const handleLogin = (values) => {
-    authenticate({}, values).then((value) => {
-      if (value.status === "failed") {
-        setLoginStatus(value);
-      }
+    startTransition(() => {
+      authenticate({}, values, "/group/lukas").then((value) => {
+        // catch login error
+        if (value && value.status === "failed") {
+          setLoginStatus(value);
+        }
+      });
     });
   };
 
   return (
     <form
-      onSubmit={form.onSubmit((values) => handleLogin(values))}
+      onSubmit={form.onSubmit((values, e) => {
+        e.preventDefault();
+        handleLogin(values);
+      })}
       className="max-w-[430px]"
     >
       <Grid>
         <Grid.Col span={12}>
           <TextInput
+            disabled={isPending}
             required
             label="Group Name"
             placeholder="Enter group name"
@@ -41,6 +49,7 @@ function LoginForm() {
         </Grid.Col>
         <Grid.Col span={12}>
           <PasswordInput
+            disabled={isPending}
             required
             label="Password"
             defaultValue=""
@@ -57,7 +66,7 @@ function LoginForm() {
           </Grid.Col>
         )}
         <Grid.Col span={12}>
-          <Button type="submit" loading={loading}>
+          <Button type="submit" loading={isPending}>
             Login
           </Button>
         </Grid.Col>

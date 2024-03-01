@@ -6,9 +6,10 @@ import { useColorScheme, useEscClose } from "./hooks";
 import { useDisclosure } from "@mantine/hooks";
 import CreateGroupModal from "./components/CreateGroupModal";
 import CreateGroupForm from "./components/CreateGroupForm";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useOutsideAlerter } from "./hooks";
 import LoginForm from "./components/LoginForm";
+import { signOut } from "next-auth/react";
 
 function Template({ children }) {
   const [colorScheme, toggleColorScheme] = useColorScheme();
@@ -24,6 +25,17 @@ function Template({ children }) {
       <Flex justify={"space-between"} align={"center"}>
         <h2>split-the-difference</h2>
         <Flex>
+          <Button
+            variant="filled"
+            radius={"xs"}
+            className={"mr-4"}
+            onClick={(e) => {
+              e.preventDefault();
+              signOut();
+            }}
+          >
+            Logout
+          </Button>
           <Button
             variant="filled"
             radius={"xs"}

@@ -15,7 +15,8 @@ export default function CreateGroupForm({ onSubmit, close }) {
   const form = useForm();
   const router = useRouter();
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, e) => {
+    e.preventDefault();
     setLoading(true);
 
     const pw = values.password;

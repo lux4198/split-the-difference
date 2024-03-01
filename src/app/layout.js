@@ -3,6 +3,7 @@ import "./globals.css";
 import "@mantine/core/styles.css";
 
 import { ColorSchemeScript, MantineProvider, createTheme } from "@mantine/core";
+import { SessionProvider } from "next-auth/react";
 
 const theme = createTheme({
   fontFamily: "Open Sans, sans-serif",
@@ -24,15 +25,17 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <head>
-        <ColorSchemeScript />
-      </head>
-      <body className={inter.className + " overflow-hidden"}>
-        <MantineProvider theme={theme} defaultColorScheme="light">
-          {children}
-        </MantineProvider>
-      </body>
-    </html>
+    <SessionProvider>
+      <html lang="en">
+        <head>
+          <ColorSchemeScript />
+        </head>
+        <body className={inter.className + " overflow-hidden"}>
+          <MantineProvider theme={theme} defaultColorScheme="light">
+            {children}
+          </MantineProvider>
+        </body>
+      </html>
+    </SessionProvider>
   );
 }

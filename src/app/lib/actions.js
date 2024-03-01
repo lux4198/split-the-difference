@@ -1,11 +1,11 @@
 "use server";
 
-import { signIn } from "@/../auth";
+import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
-export async function authenticate(prevState, formData) {
+export async function authenticate(prevState, formData, callbackUrl) {
   try {
-    await signIn("credentials", formData);
+    await signIn("credentials", { ...formData, redirectTo: callbackUrl });
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
