@@ -1,5 +1,6 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { z } from "zod";
 
 const prisma = new PrismaClient().$extends({
   query: {
@@ -18,6 +19,13 @@ export async function POST(request) {
   const res = await request.json();
   let code = "";
   try {
+    const parsedCredentials = z
+      .object({ name: z.string(), password: z.string().min(6) })
+      .safeParse(res);
+    if (!parsedCredentials.success) {
+      let msg = "Password has to have a minimum length of 6 characters.";
+      return Response.json({ status: "failed", msg: msg, code: code });
+    }
     await prisma.group.create({
       data: {
         email: res.email,
