@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Text } from "@mantine/core";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import ExpenseCard from "@/app/components/ExpenseCard";
 
 function Page() {
   const pathname = usePathname();
@@ -22,25 +23,17 @@ function Page() {
   }, [session]);
 
   return (
-    <>
-      <h2>Group Page</h2>
-      {members &&
-        members.map((member) => (
-          <Text key={member.name + member.id}>{member.name}</Text>
-        ))}
+    <main className={"ml-10 mr-10"}>
+      <h2 className={"font-medium mb-5"}>Your Expenses</h2>
       {expenses &&
         expenses.map((expense) => (
-          <>
-            <Text key={expense.name + expense.id}>{expense.name}</Text>
-            <Text>Members: </Text>
-            {expense.members.map((member) => (
-              <span key={expense.name + member.name + member.id}>
-                {member.name + ", "}
-              </span>
-            ))}
-          </>
+          <ExpenseCard
+            key={expense.name + expense.id}
+            expense={expense}
+            members={members}
+          />
         ))}
-    </>
+    </main>
   );
 }
 

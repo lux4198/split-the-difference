@@ -13,7 +13,9 @@ function TopNavWrap({ children }) {
     <Flex
       justify={"space-between"}
       align={"center"}
-      className={"p-5 pb-2 border-solid border-0 border-b-2 border-black"}
+      className={
+        "p-5 pb-2 border-solid border-0 border-b-2 border-black dark:border-white"
+      }
     >
       <Link href={"/"}>
         <h2>split-the-difference</h2>

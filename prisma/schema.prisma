@@ -9,14 +9,16 @@ datasource db {
 }
 
 model Group {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  name      String    @db.VarChar(100) @unique
-  password String @db.VarChar(100)
-  email String @db.VarChar(100)
-  members   Member[]
-  Expense   Expense[]
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  name         String   @unique @db.VarChar(100)
+  password     String   @db.VarChar(100)
+  email        String   @db.VarChar(100)
+  baseCurrency String   @default("EUR") @db.VarChar(3)
+
+  members  Member[]
+  Expense  Expense[]
   payments Payment[]
 }
 
@@ -25,41 +27,45 @@ model Member {
   name    String @db.VarChar(100)
   groupId Int
 
-  group    Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group          Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
   expensesShared Expense[] @relation("MemberExpensesShared")
-  expensesPayed Expense[] @relation("MemberExpensesPayed")
+  payed          Expense[]
 
   paymentsFrom Payment[] @relation("memberFrom")
-  paymentsTo Payment[] @relation("memberTo")
+  paymentsTo   Payment[] @relation("memberTo")
 }
 
 model Expense {
-  id      Int     @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt @default(now())
-  name    String? @db.VarChar(255)
-  type String? @db.VarChar(50)
-  value   Float
-  groupId Int
-  group   Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  name      String?  @db.VarChar(255)
+  type      String?  @db.VarChar(50)
+  value     Float
+  currency  String   @default("EUR") @db.VarChar(3)
 
-  membersPaying Member[] @relation("MemberExpensesPayed")
+  groupId Int
+  group   Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  memberId       Int
+  payedBy        Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
   membersSharing Member[] @relation("MemberExpensesShared")
 }
 
 model Payment {
-  id Int @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  value   Float
+  value    Float
+  currency String @default("EUR") @db.VarChar(3)
 
   fromId Int
-  toId Int
+  toId   Int
 
-  memberFrom Member @relation("memberFrom", fields : [fromId], references: [id], onDelete: Cascade)
-  memberTo Member @relation("memberTo", fields : [toId], references: [id], onDelete: Cascade)
+  memberFrom Member @relation("memberFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  memberTo   Member @relation("memberTo", fields: [toId], references: [id], onDelete: Cascade)
 
   groupId Int
-  group   Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group   Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }

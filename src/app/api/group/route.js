@@ -16,8 +16,11 @@ export async function GET(request) {
     },
   });
   const groupExpenses = await prisma.expense.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
     include: {
-      members: { select: { id: true, name: true } },
+      membersSharing: { select: { id: true, name: true } },
     },
     where: {
       groupId: groupId,
@@ -26,5 +29,14 @@ export async function GET(request) {
   groupExpenses.forEach((expense) => {
     delete expense.groupId;
   });
-  return Response.json({ members: groupMembers, expenses: groupExpenses });
+  const groupPayments = await prisma.payment.findMany({
+    where: {
+      groupId: groupId,
+    },
+  });
+  return Response.json({
+    members: groupMembers,
+    expenses: groupExpenses,
+    payments: groupPayments,
+  });
 }
