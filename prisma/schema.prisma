@@ -17,6 +17,7 @@ model Group {
   email String @db.VarChar(100)
   members   Member[]
   Expense   Expense[]
+  payments Payment[]
 }
 
 model Member {
@@ -25,15 +26,30 @@ model Member {
   groupId Int
 
   group    Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  expenses Expense[] @relation("MemberExpenses")
+  expensesShared Expense[] @relation("MemberExpensesShared")
+  expensesPayed Expense[] @relation("MemberExpensesPayed")
 }
 
 model Expense {
   id      Int     @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt @default(now())
   name    String? @db.VarChar(255)
+  type String? @db.VarChar(50)
   value   Float
   groupId Int
   group   Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
-  members Member[] @relation("MemberExpenses")
+  membersPaying Member[] @relation("MemberExpensesPayed")
+  membersSharing Member[] @relation("MemberExpensesShared")
+}
+
+model Payment {
+  id Int @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  value   Float
+  groupId Int
+  group   Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
