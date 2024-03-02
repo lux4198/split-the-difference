@@ -3,9 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Overlay, CloseButton, Card } from "@mantine/core";
-import { useToggle } from "@mantine/hooks";
 
-function CreateGroupModal({ opened, close, children, modalRef }) {
+function CreateModal({ opened, close, children, modalRef }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -43,4 +42,4 @@ function CreateGroupModal({ opened, close, children, modalRef }) {
   );
 }
 
-export default CreateGroupModal;
+export default CreateModal;

@@ -1,9 +1,9 @@
 "use client";
 
 import { Button, Flex } from "@mantine/core";
-import { useColorScheme, useEscClose } from "../hooks";
+import { useEscClose } from "../hooks";
 import { useDisclosure } from "@mantine/hooks";
-import CreateGroupModal from "../components/CreateGroupModal";
+import CreateModal from "../components/CreateModal";
 import CreateGroupForm from "../components/CreateGroupForm";
 import { useRef, useState } from "react";
 import { useOutsideAlerter } from "../hooks";
@@ -13,16 +13,12 @@ import TopNavWrap from "../components/TopNavWrap";
 
 function Template({ children }) {
   const { status: sessionStatus } = useSession();
-  const [colorScheme, toggleColorScheme] = useColorScheme();
   const [signUp, setSignUp] = useState(true);
   const [opened, { close, toggle }] = useDisclosure(false);
   const modalRef = useRef(null);
   useOutsideAlerter(modalRef, opened, close);
   useEscClose(opened, close);
 
-  console.log(sessionStatus);
-
-  const dark = colorScheme === "dark";
   return (
     <main className="p-5">
       <TopNavWrap>
@@ -70,9 +66,9 @@ function Template({ children }) {
           )}
         </Flex>
       </TopNavWrap>
-      <CreateGroupModal modalRef={modalRef} opened={opened} close={close}>
+      <CreateModal modalRef={modalRef} opened={opened} close={close}>
         {signUp ? <CreateGroupForm close={close} /> : <LoginForm />}
-      </CreateGroupModal>
+      </CreateModal>
       {children}
     </main>
   );

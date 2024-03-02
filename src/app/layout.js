@@ -7,7 +7,8 @@ import { SessionProvider } from "next-auth/react";
 
 const theme = createTheme({
   fontFamily: "Open Sans, sans-serif",
-  primaryColor: "yellow",
+  primaryColor: "blue",
+  primaryShade: 9,
   white: "#ede7e6",
   headings: {
     fontFamily: "Open Sans, sans-serif",
