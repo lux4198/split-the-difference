@@ -28,6 +28,9 @@ model Member {
   group    Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
   expensesShared Expense[] @relation("MemberExpensesShared")
   expensesPayed Expense[] @relation("MemberExpensesPayed")
+
+  paymentsFrom Payment[] @relation("memberFrom")
+  paymentsTo Payment[] @relation("memberTo")
 }
 
 model Expense {
@@ -50,6 +53,13 @@ model Payment {
   updatedAt DateTime  @updatedAt
 
   value   Float
+
+  fromId Int
+  toId Int
+
+  memberFrom Member @relation("memberFrom", fields : [fromId], references: [id], onDelete: Cascade)
+  memberTo Member @relation("memberTo", fields : [toId], references: [id], onDelete: Cascade)
+
   groupId Int
   group   Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
