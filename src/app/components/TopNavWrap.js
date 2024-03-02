@@ -10,8 +10,12 @@ function TopNavWrap({ children }) {
   const dark = colorScheme === "dark";
 
   return (
-    <Flex justify={"space-between"} align={"center"}>
-      <Link href={"/"} className="no-underline text-inherit">
+    <Flex
+      justify={"space-between"}
+      align={"center"}
+      className={"p-5 pb-2 border-solid border-0 border-b-2 border-black"}
+    >
+      <Link href={"/"}>
         <h2>split-the-difference</h2>
       </Link>
       <Flex>

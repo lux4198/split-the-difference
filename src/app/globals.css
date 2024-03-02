@@ -13,6 +13,11 @@ h6 {
   margin: 0;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .bg-wave {
   position: absolute;
   bottom: 0;

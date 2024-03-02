@@ -8,7 +8,7 @@ import { SessionProvider } from "next-auth/react";
 const theme = createTheme({
   fontFamily: "Open Sans, sans-serif",
   primaryColor: "blue",
-  primaryShade: 9,
+  primaryShade: 7,
   white: "#ede7e6",
   headings: {
     fontFamily: "Open Sans, sans-serif",
@@ -21,7 +21,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Split The Difference",
-  description: "Expense sharing made easy.",
+  description: "Expense sharing made simple.",
 };
 
 export default function RootLayout({ children }) {

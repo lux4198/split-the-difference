@@ -8,7 +8,7 @@ function Template({ children }) {
   const { status: sessionStatus } = useSession();
 
   return (
-    <main className="p-5">
+    <>
       <TopNavWrap>
         <Flex>
           <Button
@@ -24,8 +24,8 @@ function Template({ children }) {
           </Button>
         </Flex>
       </TopNavWrap>
-      {children}
-    </main>
+      <main className="p-5">{children}</main>
+    </>
   );
 }
 

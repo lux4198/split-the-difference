@@ -8,23 +8,36 @@ import { useSession } from "next-auth/react";
 function Page() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
-  const [groups, setGroups] = useState(null);
+  const [members, setMembers] = useState(null);
+  const [expenses, setExpenses] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`/api/group/all/`);
+      const response = await fetch(`/api/group/?name=${session.user.name}`);
       const newData = await response.json();
-      setGroups(newData.data);
+      setMembers(newData.members);
+      setExpenses(newData.expenses);
     };
-    fetchData();
-  }, []);
+    session && fetchData();
+  }, [session]);
 
-  console.log(session, status);
   return (
     <>
       <h2>Group Page</h2>
-      {groups &&
-        groups.map((group) => <Text key={group.name}>{group.name}</Text>)}
+      {members &&
+        members.map((member) => (
+          <Text key={member.name + member.id}>{member.name}</Text>
+        ))}
+      {expenses &&
+        expenses.map((expense) => (
+          <>
+            <Text key={expense.name + expense.id}>{expense.name}</Text>
+            <Text>Members: </Text>
+            {expense.members.map((member) => (
+              <span>{member.name + ", "}</span>
+            ))}
+          </>
+        ))}
     </>
   );
 }
