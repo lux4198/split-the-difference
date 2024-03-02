@@ -34,7 +34,9 @@ function Page() {
             <Text key={expense.name + expense.id}>{expense.name}</Text>
             <Text>Members: </Text>
             {expense.members.map((member) => (
-              <span>{member.name + ", "}</span>
+              <span key={expense.name + member.name + member.id}>
+                {member.name + ", "}
+              </span>
             ))}
           </>
         ))}
