@@ -69,7 +69,7 @@ export function MemberInputMultiple({
   }, []);
 
   const options = members.map((member) => (
-    <Combobox.Option value={member} key={member.name_member.id}>
+    <Combobox.Option value={member} key={member.name + member.id}>
       <Flex justify={"space-between"}>
         <SelectOption
           name={member.name}
