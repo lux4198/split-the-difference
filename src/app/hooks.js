@@ -20,7 +20,7 @@ export const useOutsideAlerter = (ref, fire, handler) => {
      */
     function handleClickOutside(event) {
       if (fire && ref.current && !ref.current.contains(event.target)) {
-        handler();
+        // handler();
       }
     }
     // Bind the event listener

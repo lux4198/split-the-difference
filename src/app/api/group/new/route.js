@@ -1,8 +1,9 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import { prisma } from "@/app/lib/db";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 
-const prisma = new PrismaClient().$extends({
+const prisma = prisma.$extends({
   query: {
     group: {
       $allOperations({ operation, args, query }) {

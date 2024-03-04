@@ -38,11 +38,11 @@ model Member {
 model Expense {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  updatedAt DateTime @updatedAt
   name      String?  @db.VarChar(255)
   type      String?  @db.VarChar(50)
   value     Float
-  currency  String   @default("EUR") @db.VarChar(3)
+  currency  String   @db.VarChar(3)
 
   groupId Int
   group   Group @relation(fields: [groupId], references: [id], onDelete: Cascade)

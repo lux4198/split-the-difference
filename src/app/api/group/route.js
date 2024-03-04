@@ -4,12 +4,16 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const groupName = searchParams.get("name");
 
-  const groupData = await prisma.group.findUnique({
+  const groupInfo = await prisma.group.findUnique({
     where: {
       name: groupName,
     },
   });
-  const groupId = groupData.id;
+  delete groupInfo.password;
+  delete groupInfo.email;
+
+  const groupId = groupInfo.id;
+
   const groupMembers = await prisma.member.findMany({
     where: {
       groupId: groupId,
@@ -35,6 +39,7 @@ export async function GET(request) {
     },
   });
   return Response.json({
+    groupInfo: groupInfo,
     members: groupMembers,
     expenses: groupExpenses,
     payments: groupPayments,

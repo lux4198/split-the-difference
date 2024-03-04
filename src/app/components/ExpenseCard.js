@@ -1,11 +1,10 @@
 "use client";
 import { Badge, Card, Flex, useMantineTheme, Tooltip } from "@mantine/core";
 import moment from "moment";
+import { memberColors } from "@/app/lib/utils";
+import MemberBadge from "./MemberBadge";
 
 function ExpenseCard({ expense, members }) {
-  const theme = useMantineTheme();
-  const colors = Object.keys(theme.colors).slice(2);
-
   const date = moment(expense.createdAt);
   const parsedDate = date.format("MMM Do YYYY");
   const payedByMember = members.find(
@@ -14,6 +13,7 @@ function ExpenseCard({ expense, members }) {
   return (
     <Card
       className={"m-auto mb-4 max-w-[500px] dark:text-white"}
+      styles={{ root: { backgroundColor: "rgba(159, 203, 209, .3)" } }}
       shadow="sm"
       padding="lg"
       radius="md"
@@ -28,9 +28,14 @@ function ExpenseCard({ expense, members }) {
       <Flex align={"baseline"} justify={"space-between"}>
         <Flex align={"baseline"}>
           <span className="text-start w-fit ml-1">
-            {payedByMember.name} payed:{" "}
+            <MemberBadge
+              color={memberColors[payedByMember.id % memberColors.length]}
+              name={payedByMember.name}
+              className={"mr-2"}
+            />
+            payed:{" "}
           </span>
-          <h1 className="ml-5 font-semibold text-[2.5rem] text-gray-600 dark:text-white w-fit ">
+          <h1 className="ml-5 font-semibold text-[2.5rem] dark:text-white w-fit ">
             {expense.value}
           </h1>
           <span className="text-start w-fit ml-1">{expense.currency}</span>
@@ -38,16 +43,11 @@ function ExpenseCard({ expense, members }) {
         <span className="ml-1">
           Shared by:{" "}
           {expense.membersSharing.map((member, idx) => (
-            <Tooltip key={"ExpenseMemberBadge" + member.id} label={member.name}>
-              <Badge
-                variant="filled"
-                className="ml-1"
-                circle
-                color={colors[idx % colors.length]}
-              >
-                {member.name.slice(0, 2)}
-              </Badge>
-            </Tooltip>
+            <MemberBadge
+              color={memberColors[member.id % memberColors.length]}
+              name={member.name}
+              className={"mr-1"}
+            />
           ))}
         </span>
       </Flex>
