@@ -3,7 +3,7 @@ import { prisma } from "@/app/lib/db";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 
-const prisma = prisma.$extends({
+prisma.$extends({
   query: {
     group: {
       $allOperations({ operation, args, query }) {
