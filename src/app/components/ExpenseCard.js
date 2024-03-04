@@ -44,6 +44,7 @@ function ExpenseCard({ expense, members }) {
           Shared by:{" "}
           {expense.membersSharing.map((member, idx) => (
             <MemberBadge
+              key={"cardBadge" + member.name + member.id}
               color={memberColors[member.id % memberColors.length]}
               name={member.name}
               className={"mr-1"}
