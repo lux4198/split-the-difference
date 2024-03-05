@@ -17,7 +17,7 @@ function CreateModal({ opened, close, children, modalRef }) {
       <>
         {opened && (
           <Overlay
-            style={{ zIndex: "10" }}
+            style={{ zIndex: "10", position: "fixed" }}
             color="#000"
             backgroundOpacity={0.85}
           />

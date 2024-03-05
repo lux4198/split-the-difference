@@ -1,10 +1,24 @@
 "use client";
-import { Badge, Card, Flex, useMantineTheme, Tooltip } from "@mantine/core";
+import {
+  Badge,
+  Card,
+  Flex,
+  useMantineTheme,
+  Tooltip,
+  ActionIcon,
+} from "@mantine/core";
 import moment from "moment";
 import { memberColors } from "@/app/lib/utils";
 import MemberBadge from "./MemberBadge";
+import { IconTrash } from "@tabler/icons-react";
+import CreateModal from "./CreateModal";
+import { useDisclosure } from "@mantine/hooks";
+import { useRef } from "react";
+import ExpenseDeleteForm from "./InputComponents/ExpenseDeleteForm";
 
 function ExpenseCard({ expense, members }) {
+  const [opened, { close, toggle, open }] = useDisclosure(false);
+  const modalRef = useRef(null);
   const date = moment(expense.createdAt);
   const parsedDate = date.format("MMM Do YYYY");
   const payedByMember = members.find(
@@ -19,11 +33,16 @@ function ExpenseCard({ expense, members }) {
       radius="md"
       withBorder
     >
-      <Flex justify={"space-between"}>
+      <Flex justify={"space-between"} align={"center"}>
         <h3 className="font-medium dark:text-white">{expense.name}</h3>
-        <span className="text-gray-500 dark:text-white text-sm">
-          {parsedDate}
-        </span>
+        <Flex align={"center"}>
+          <span className="text-gray-500 dark:text-white text-sm">
+            {parsedDate}
+          </span>
+          <ActionIcon size={"sm"} className="ml-2" color="red" onClick={open}>
+            <IconTrash size={17} />
+          </ActionIcon>
+        </Flex>
       </Flex>
       <Flex align={"baseline"} justify={"space-between"}>
         <Flex align={"baseline"}>
@@ -52,6 +71,13 @@ function ExpenseCard({ expense, members }) {
           ))}
         </span>
       </Flex>
+      <CreateModal close={close} opened={opened}>
+        <ExpenseDeleteForm
+          closeModal={close}
+          expenseId={expense.id}
+          expenseName={expense.name}
+        />
+      </CreateModal>
     </Card>
   );
 }

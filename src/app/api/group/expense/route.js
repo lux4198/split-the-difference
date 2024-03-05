@@ -44,3 +44,24 @@ export async function POST(request) {
     });
   }
 }
+
+export async function DELETE(request) {
+  const req = await request.json(); // Get the expense ID from the query params
+  const { id } = req;
+  try {
+    const expense = await prisma.expense.delete({
+      where: { id: id },
+    });
+    return Response.json({
+      msg: "Expense deleted successfully",
+      status: "success",
+    });
+  } catch (error) {
+    console.error("Failed to delete expense:", error);
+    return Response.json({
+      msg: "Failed to delete expense",
+      status: "failed",
+      error: error.message,
+    });
+  }
+}
