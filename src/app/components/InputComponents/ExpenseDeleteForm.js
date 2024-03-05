@@ -5,7 +5,13 @@ import { Button, Text } from "@mantine/core";
 import { useAtom } from "jotai";
 import React, { useState } from "react";
 
-function ExpenseDeleteForm({ expenseId, expenseName, closeModal }) {
+function ExpenseDeleteForm({
+  expenseId,
+  expenseName,
+  closeModal,
+  setShowSuccessAlert,
+  setSuccessAlertTitle,
+}) {
   const [expenses, setExpenses] = useAtom(expensesAtom);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,6 +34,8 @@ function ExpenseDeleteForm({ expenseId, expenseName, closeModal }) {
         setLoading(false);
         setExpenses(expenses.filter((expense) => expense.id !== expenseId));
         closeModal();
+        setSuccessAlertTitle(`Successfully deleted Expense ${expenseName}.`);
+        setShowSuccessAlert(true);
       } else {
         setLoading(false);
         setError(true);

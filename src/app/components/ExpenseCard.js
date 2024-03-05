@@ -16,7 +16,12 @@ import { useDisclosure } from "@mantine/hooks";
 import { useRef } from "react";
 import ExpenseDeleteForm from "./InputComponents/ExpenseDeleteForm";
 
-function ExpenseCard({ expense, members }) {
+function ExpenseCard({
+  expense,
+  members,
+  setShowSuccessAlert,
+  setSuccessAlertTitle,
+}) {
   const [opened, { close, toggle, open }] = useDisclosure(false);
   const modalRef = useRef(null);
   const date = moment(expense.createdAt);
@@ -76,6 +81,8 @@ function ExpenseCard({ expense, members }) {
           closeModal={close}
           expenseId={expense.id}
           expenseName={expense.name}
+          setShowSuccessAlert={setShowSuccessAlert}
+          setSuccessAlertTitle={setSuccessAlertTitle}
         />
       </CreateModal>
     </Card>

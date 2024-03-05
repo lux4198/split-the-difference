@@ -17,7 +17,12 @@ import { MemberInputMultiple } from "./InputComponents/MemberInputMultiple";
 import { memberColors } from "../lib/utils";
 import { MemberInputSingle } from "./InputComponents/MemberInputSingle";
 
-function CreateExpenseForm({ setFormActive, close }) {
+function CreateExpenseForm({
+  setFormActive,
+  close,
+  setShowSuccessAlert,
+  setSuccessAlertTitle,
+}) {
   const groupId = useAtomValue(groupIdAtom);
   const members = useAtomValue(membersAtom);
   const [expenses, setExpenses] = useAtom(expensesAtom);
@@ -56,6 +61,10 @@ function CreateExpenseForm({ setFormActive, close }) {
       if (result.status === "success") {
         setLoading(false);
         setExpenses([...expenses, result.data]);
+        setShowSuccessAlert(true);
+        setSuccessAlertTitle(
+          `Successfully created Expense ${result.data.name}.`,
+        );
         close();
       }
     };

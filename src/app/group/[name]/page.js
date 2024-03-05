@@ -11,6 +11,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { useOutsideAlerter, useEscClose } from "@/app/hooks";
 import { useAtom } from "jotai";
 import { expensesAtom, groupInfoAtom, membersAtom } from "../groupAtoms";
+import SuccessAlert from "@/app/components/SuccessAlert";
+import { createPortal } from "react-dom";
 
 function Page() {
   const { data: session, status } = useSession();
@@ -21,6 +23,8 @@ function Page() {
   const [opened, { close, toggle }] = useDisclosure(false);
   const modalRef = useRef(null);
   const [formActive, setFormActive] = useState(false);
+  const [showSucessAlert, setShowSuccessAlert] = useState(false);
+  const [successAlertTitle, setSuccessAlertTitle] = useState("");
   useOutsideAlerter(modalRef, opened && !formActive, close);
   useEscClose(opened, close);
 
@@ -52,15 +56,32 @@ function Page() {
                 key={expense.name + expense.id}
                 expense={expense}
                 members={members}
+                setShowSuccessAlert={setShowSuccessAlert}
+                setSuccessAlertTitle={setSuccessAlertTitle}
               />
             ))}
         </div>
       )}
       <CreateModal modalRef={modalRef} opened={opened} close={close}>
         {opened && (
-          <CreateExpenseForm close={close} setFormActive={setFormActive} />
+          <CreateExpenseForm
+            close={close}
+            setFormActive={setFormActive}
+            setShowSuccessAlert={setShowSuccessAlert}
+            setSuccessAlertTitle={setSuccessAlertTitle}
+          />
         )}
       </CreateModal>
+      {showSucessAlert &&
+        createPortal(
+          <div className="fixed bottom-3 right-10">
+            <SuccessAlert
+              title={successAlertTitle}
+              setShowSuccessAlert={setShowSuccessAlert}
+            />
+          </div>,
+          document.body,
+        )}
     </main>
   );
 }
