@@ -13,7 +13,6 @@ import { useAtom } from "jotai";
 import { expensesAtom, groupInfoAtom, membersAtom } from "../groupAtoms";
 import SuccessAlert from "@/app/components/SuccessAlert";
 import { createPortal } from "react-dom";
-import { memberColors } from "@/app/lib/utils";
 import { useForm } from "@mantine/form";
 
 function Page() {
@@ -44,7 +43,7 @@ function Page() {
   const form = useForm();
   return (
     <main className={"mx-auto max-w-[600px] p-5 lg:p-12 pt-5"}>
-      <h2 className={"font-medium w-full"}>Your Expenses</h2>
+      <h2 className={"font-medium w-full"}>Group Expenses</h2>
       {expenses && (
         <div className="mt-5 m-auto">
           <div className="flex justify-between mb-5">

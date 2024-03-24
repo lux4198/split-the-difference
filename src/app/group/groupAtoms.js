@@ -15,13 +15,17 @@ const membersAtom = atom(null);
 const expensesAtom = atom(null);
 const paymentsAtom = atom(null);
 
-const viewMemberAtom = atom(localStorage.getItem("viewMember") ?? null);
+const viewMemberAtom = atom(
+  localStorage.getItem("viewMember") != null
+    ? JSON.parse(localStorage.getItem("viewMember"))
+    : null,
+);
 
 const viewMemberAtomWithPersistence = atom(
   (get) => get(viewMemberAtom),
   (get, set, newStr) => {
     set(viewMemberAtom, newStr);
-    localStorage.setItem("viewMember", newStr);
+    localStorage.setItem("viewMember", JSON.stringify(newStr));
   },
 );
 
