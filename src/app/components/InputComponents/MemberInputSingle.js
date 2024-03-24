@@ -32,7 +32,7 @@ export function MemberInputSingle({
   members,
   colors,
   label,
-  form,
+  onChange,
   disabled,
   defaultValue = null,
 }) {
@@ -67,10 +67,10 @@ export function MemberInputSingle({
       onOptionSubmit={(val) => {
         if (selectedValue && selectedValue.id === val.id) {
           setSelectedValue("");
-          form.setFieldValue("payedBy", null);
+          onChange(null);
         } else {
           setSelectedValue(val);
-          form.setFieldValue("payedBy", val);
+          onChange(val);
         }
         combobox.closeDropdown();
       }}

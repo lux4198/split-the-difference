@@ -17,7 +17,7 @@ import { MemberInputMultiple } from "../MemberInputMultiple";
 import { memberColors } from "../../../lib/utils";
 import { MemberInputSingle } from "../MemberInputSingle";
 
-function ExpenseFormBase({
+export default function ExpenseFormBase({
   form,
   setFormActive,
   handleSubmit,
@@ -63,7 +63,7 @@ function ExpenseFormBase({
             label="Payed by"
             members={members}
             colors={memberColors}
-            form={form}
+            onChange={(val) => form.setFieldValue("payedBy", val)}
             defaultValue={defaultValues ? defaultValues.payedBy : null}
           />
         </Grid.Col>
@@ -111,5 +111,3 @@ function ExpenseFormBase({
     </form>
   );
 }
-
-export default ExpenseFormBase;

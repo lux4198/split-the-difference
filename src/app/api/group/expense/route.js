@@ -69,7 +69,6 @@ export async function DELETE(request) {
 export async function PATCH(request) {
   const req = await request.json();
   const { id, currency, sharedBy, payedBy, name, value, groupId } = req;
-  console.log(req);
 
   try {
     const expense = await prisma.expense.update({
