@@ -3,12 +3,12 @@
 import { useRef, useState } from "react";
 import { Button, CloseButton, Flex, Popover } from "@mantine/core";
 import { signOut, useSession } from "next-auth/react";
-import TopNavWrap from "@/app/components/TopNavWrap";
-import { MemberInputSingle } from "../components/InputComponents/MemberInputSingle";
+import TopNavWrap from "@/app/components/topNavWrap";
+import { MemberInputSingle } from "../components/inputComponents/memberInputSingle";
 import { useAtom, useAtomValue } from "jotai";
 import { membersAtom, viewMemberAtomWithPersistence } from "./groupAtoms";
 import { memberColors } from "../lib/utils";
-import MemberBadge from "../components/MemberBadge";
+import MemberBadge from "../components/memberBadge";
 import { useEscClose } from "../hooks";
 
 function Template({ children }) {
@@ -76,7 +76,12 @@ function Template({ children }) {
           </Button>
         </Flex>
       </TopNavWrap>
-      <main className="p-5">{children}</main>
+      <main className="p-5 pb-[100px]">{children}</main>
+      <footer className="absolute bottom-0 p-5">
+        <a href="https://www.exchangerate-api.com">
+          Rates By Exchange Rate API
+        </a>
+      </footer>
     </>
   );
 }

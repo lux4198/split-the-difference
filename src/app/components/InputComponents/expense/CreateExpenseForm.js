@@ -11,7 +11,7 @@ import {
 } from "../../../group/groupAtoms";
 import { useFocusWithin } from "@mantine/hooks";
 import { useEffect } from "react";
-import ExpenseFormBase from "./ExpenseFormBase";
+import ExpenseFormBase from "./expenseFormBase";
 
 function CreateExpenseForm({
   setFormActive,

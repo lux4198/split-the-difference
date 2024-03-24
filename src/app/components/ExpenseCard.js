@@ -9,13 +9,13 @@ import {
 } from "@mantine/core";
 import moment from "moment";
 import { memberColors } from "@/app/lib/utils";
-import MemberBadge from "./MemberBadge";
+import MemberBadge from "./memberBadge";
 import { IconUsersGroup, IconEdit, IconTrash } from "@tabler/icons-react";
-import CreateModal from "./CreateModal";
+import CreateModal from "./createModal";
 import { useDisclosure } from "@mantine/hooks";
 import { useRef, useState } from "react";
-import ExpenseDeleteForm from "./InputComponents/expense/ExpenseDeleteForm";
-import ExpenseEditForm from "./InputComponents/expense/ExpenseEditForm";
+import ExpenseDeleteForm from "./inputComponents/expense/expenseDeleteForm";
+import ExpenseEditForm from "./inputComponents/expense/expenseEditForm";
 import { useEscClose } from "../hooks";
 
 function ExpenseCard({
@@ -90,17 +90,16 @@ function ExpenseCard({
       </Flex>
       <div className="ml-1">
         Shared by:{" "}
-        {expense.membersSharing.length === members.length ? (
-          <span>All</span>
-        ) : (
-          expense.membersSharing.map((member, idx) => (
-            <MemberBadge
-              key={"cardBadge" + member.name + member.id}
-              color={memberColors[member.id % memberColors.length]}
-              name={member.name}
-              className={"mr-1"}
-            />
-          ))
+        {expense.membersSharing.map((member, idx) => (
+          <MemberBadge
+            key={"cardBadge" + member.name + member.id}
+            color={memberColors[member.id % memberColors.length]}
+            name={member.name}
+            className={"mr-1"}
+          />
+        ))}
+        {expense.membersSharing.length === members.length && (
+          <span className="ml-2">(All)</span>
         )}
       </div>
       {opened && (

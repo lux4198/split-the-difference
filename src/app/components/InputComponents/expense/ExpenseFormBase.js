@@ -13,9 +13,9 @@ import {
 import { currencyCodes, currencyData } from "../../../lib/currencyData";
 import { useFocusWithin } from "@mantine/hooks";
 import { useEffect } from "react";
-import { MemberInputMultiple } from "../MemberInputMultiple";
+import { MemberInputMultiple } from "../memberInputMultiple";
 import { memberColors } from "../../../lib/utils";
-import { MemberInputSingle } from "../MemberInputSingle";
+import { MemberInputSingle } from "../memberInputSingle";
 
 export default function ExpenseFormBase({
   form,
