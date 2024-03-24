@@ -16,6 +16,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useRef, useState } from "react";
 import ExpenseDeleteForm from "./InputComponents/expense/ExpenseDeleteForm";
 import ExpenseEditForm from "./InputComponents/expense/ExpenseEditForm";
+import { useEscClose } from "../hooks";
 
 function ExpenseCard({
   expense,
@@ -32,6 +33,7 @@ function ExpenseCard({
   );
   const [action, setAction] = useState("");
   const [editFormActive, setEditFormActive] = useState(false);
+  useEscClose(opened, close);
   return (
     <Card
       className={"m-auto mb-4 max-w-[500px] dark:text-white"}
