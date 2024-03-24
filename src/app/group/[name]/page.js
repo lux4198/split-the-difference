@@ -40,15 +40,20 @@ function Page() {
   }, [session]);
 
   return (
-    <main className={"ml-10 mr-10"}>
-      <h2 className={"font-medium mb-5"}>Your Expenses</h2>
-      {members && (
-        <Button rightSection={<IconTablePlus size={14} />} onClick={toggle}>
-          Add Expense
-        </Button>
-      )}
+    <main className={"mx-auto max-w-[600px] p-5 lg:p-12 pt-5"}>
+      <h2 className={"font-medium w-full"}>Your Expenses</h2>
       {expenses && (
-        <div className="mt-5">
+        <div className="mt-5 m-auto">
+          <div className="ml-auto w-fit mb-5">
+            {members && (
+              <Button
+                rightSection={<IconTablePlus size={14} />}
+                onClick={toggle}
+              >
+                Add Expense
+              </Button>
+            )}
+          </div>
           {expenses
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
             .map((expense) => (

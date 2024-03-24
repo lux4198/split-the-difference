@@ -10,7 +10,7 @@ import {
 import moment from "moment";
 import { memberColors } from "@/app/lib/utils";
 import MemberBadge from "./MemberBadge";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconUsersGroup, IconEdit, IconTrash } from "@tabler/icons-react";
 import CreateModal from "./CreateModal";
 import { useDisclosure } from "@mantine/hooks";
 import { useRef, useState } from "react";
@@ -36,7 +36,7 @@ function ExpenseCard({
   useEscClose(opened, close);
   return (
     <Card
-      className={"m-auto mb-4 max-w-[500px] dark:text-white"}
+      className={"m-auto mb-4 dark:text-white"}
       styles={{ root: { backgroundColor: "rgba(159, 203, 209, .3)" } }}
       shadow="sm"
       padding="lg"
@@ -87,18 +87,22 @@ function ExpenseCard({
           </h1>
           <span className="text-start w-fit ml-1">{expense.currency}</span>
         </Flex>
-        <span className="ml-1">
-          Shared by:{" "}
-          {expense.membersSharing.map((member, idx) => (
+      </Flex>
+      <div className="ml-1">
+        Shared by:{" "}
+        {expense.membersSharing.length === members.length ? (
+          <span>All</span>
+        ) : (
+          expense.membersSharing.map((member, idx) => (
             <MemberBadge
               key={"cardBadge" + member.name + member.id}
               color={memberColors[member.id % memberColors.length]}
               name={member.name}
               className={"mr-1"}
             />
-          ))}
-        </span>
-      </Flex>
+          ))
+        )}
+      </div>
       {opened && (
         <CreateModal close={close} opened={opened}>
           {action === "edit" ? (
