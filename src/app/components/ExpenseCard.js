@@ -10,11 +10,12 @@ import {
 import moment from "moment";
 import { memberColors } from "@/app/lib/utils";
 import MemberBadge from "./MemberBadge";
-import { IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
 import CreateModal from "./CreateModal";
 import { useDisclosure } from "@mantine/hooks";
-import { useRef } from "react";
-import ExpenseDeleteForm from "./InputComponents/ExpenseDeleteForm";
+import { useRef, useState } from "react";
+import ExpenseDeleteForm from "./InputComponents/expense/ExpenseDeleteForm";
+import ExpenseEditForm from "./InputComponents/expense/ExpenseEditForm";
 
 function ExpenseCard({
   expense,
@@ -29,6 +30,8 @@ function ExpenseCard({
   const payedByMember = members.find(
     (member) => member.id === expense.memberId,
   );
+  const [action, setAction] = useState("");
+  const [editFormActive, setEditFormActive] = useState(false);
   return (
     <Card
       className={"m-auto mb-4 max-w-[500px] dark:text-white"}
@@ -44,7 +47,25 @@ function ExpenseCard({
           <span className="text-gray-500 dark:text-white text-sm">
             {parsedDate}
           </span>
-          <ActionIcon size={"sm"} className="ml-2" color="red" onClick={open}>
+          <ActionIcon
+            size={"sm"}
+            className="ml-2"
+            onClick={() => {
+              open();
+              setAction("edit");
+            }}
+          >
+            <IconEdit size={17} />
+          </ActionIcon>
+          <ActionIcon
+            size={"sm"}
+            className="ml-2"
+            color="red"
+            onClick={() => {
+              open();
+              setAction("delete");
+            }}
+          >
             <IconTrash size={17} />
           </ActionIcon>
         </Flex>
@@ -76,15 +97,29 @@ function ExpenseCard({
           ))}
         </span>
       </Flex>
-      <CreateModal close={close} opened={opened}>
-        <ExpenseDeleteForm
-          closeModal={close}
-          expenseId={expense.id}
-          expenseName={expense.name}
-          setShowSuccessAlert={setShowSuccessAlert}
-          setSuccessAlertTitle={setSuccessAlertTitle}
-        />
-      </CreateModal>
+      {opened && (
+        <CreateModal close={close} opened={opened}>
+          {action === "edit" ? (
+            <ExpenseEditForm
+              expense={expense}
+              setFormActive={setEditFormActive}
+              close={close}
+              setShowSuccessAlert={setShowSuccessAlert}
+              setSuccessAlertTitle={setSuccessAlertTitle}
+            />
+          ) : (
+            action === "delete" && (
+              <ExpenseDeleteForm
+                closeModal={close}
+                expenseId={expense.id}
+                expenseName={expense.name}
+                setShowSuccessAlert={setShowSuccessAlert}
+                setSuccessAlertTitle={setSuccessAlertTitle}
+              />
+            )
+          )}
+        </CreateModal>
+      )}
     </Card>
   );
 }

@@ -9,26 +9,26 @@ import {
   groupBaseCurrAtom,
   groupIdAtom,
   membersAtom,
-} from "../group/groupAtoms";
-import { currencyCodes, currencyData } from "../lib/currencyData";
+} from "../../../group/groupAtoms";
+import { currencyCodes, currencyData } from "../../../lib/currencyData";
 import { useFocusWithin } from "@mantine/hooks";
 import { useEffect } from "react";
-import { MemberInputMultiple } from "./InputComponents/MemberInputMultiple";
-import { memberColors } from "../lib/utils";
-import { MemberInputSingle } from "./InputComponents/MemberInputSingle";
+import { MemberInputMultiple } from "../MemberInputMultiple";
+import { memberColors } from "../../../lib/utils";
+import { MemberInputSingle } from "../MemberInputSingle";
 
-function CreateExpenseForm({
+function ExpenseFormBase({
+  form,
   setFormActive,
-  close,
-  setShowSuccessAlert,
-  setSuccessAlertTitle,
+  handleSubmit,
+  loading,
+  defaultValues = null,
+  submitButtonText,
 }) {
   const groupId = useAtomValue(groupIdAtom);
   const members = useAtomValue(membersAtom);
-  const [expenses, setExpenses] = useAtom(expensesAtom);
   const baseCurrency = useAtomValue(groupBaseCurrAtom);
   const { ref, focused } = useFocusWithin();
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (focused) {
@@ -38,39 +38,6 @@ function CreateExpenseForm({
     }
   }, [focused]);
 
-  const form = useForm({
-    initialValues: {
-      currency: baseCurrency,
-      groupId: groupId,
-    },
-    validate: {
-      payedBy: (val) => (val ? null : " "),
-    },
-  });
-
-  const handleSubmit = (values) => {
-    const postData = async (values) => {
-      const response = await fetch("/api/group/expense", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-      const result = await response.json();
-      if (result.status === "success") {
-        setLoading(false);
-        setExpenses([...expenses, result.data]);
-        setShowSuccessAlert(true);
-        setSuccessAlertTitle(
-          `Successfully created Expense ${result.data.name}.`,
-        );
-        close();
-      }
-    };
-    setLoading(true);
-    postData(values);
-  };
   return (
     <form
       onSubmit={form.onSubmit((values, e) => {
@@ -86,6 +53,7 @@ function CreateExpenseForm({
             required
             label="Name"
             placeholder="Expense name"
+            defaultValue={defaultValues ? defaultValues.name : null}
             {...form.getInputProps("name")}
           />
         </Grid.Col>
@@ -96,6 +64,7 @@ function CreateExpenseForm({
             members={members}
             colors={memberColors}
             form={form}
+            defaultValue={defaultValues ? defaultValues.payedBy : null}
           />
         </Grid.Col>
         <Grid.Col span={8}>
@@ -108,6 +77,7 @@ function CreateExpenseForm({
             decimalScale={2}
             hideControls
             {...form.getInputProps("value")}
+            defaultValue={defaultValues ? defaultValues.value : null}
           />
         </Grid.Col>
         <Grid.Col span={4}>
@@ -116,7 +86,7 @@ function CreateExpenseForm({
             required
             label="Currency"
             searchable
-            defaultValue={baseCurrency}
+            defaultValue={defaultValues ? defaultValues.currency : baseCurrency}
             data={currencyCodes}
             ref={ref}
             {...form.getInputProps("currency")}
@@ -129,11 +99,12 @@ function CreateExpenseForm({
             members={members}
             colors={memberColors}
             form={form}
+            defaultValue={defaultValues ? defaultValues.membersSharing : null}
           />
         </Grid.Col>
         <Grid.Col span={12}>
           <Button type="submit" loading={loading}>
-            Add Expense
+            {submitButtonText}
           </Button>
         </Grid.Col>
       </Grid>
@@ -141,4 +112,4 @@ function CreateExpenseForm({
   );
 }
 
-export default CreateExpenseForm;
+export default ExpenseFormBase;

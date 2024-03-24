@@ -10,7 +10,7 @@ function SuccessAlert({ title, text, setShowSuccessAlert }) {
   });
 
   return (
-    <Alert title={title} icon={<IconCheck />} color="green">
+    <Alert variant="filled" title={title} icon={<IconCheck />} color="green">
       {text}
     </Alert>
   );

@@ -41,12 +41,15 @@ export function MemberInputMultiple({
   label,
   form,
   disabled,
+  defaultValue,
 }) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
   const memberIds = members.map((member) => member.id);
-  const [selectedValues, setSelectedValues] = useState(members);
+  const [selectedValues, setSelectedValues] = useState(
+    defaultValue ? defaultValue : members,
+  );
 
   const selectedOptions = members.filter((member) =>
     selectedValues.map((val) => val.id).includes(member.id),

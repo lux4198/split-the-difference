@@ -65,3 +65,44 @@ export async function DELETE(request) {
     });
   }
 }
+
+export async function PATCH(request) {
+  const req = await request.json();
+  const { id, currency, sharedBy, payedBy, name, value, groupId } = req;
+  console.log(req);
+
+  try {
+    const expense = await prisma.expense.update({
+      where: {
+        id: id,
+      },
+      data: {
+        name,
+        value,
+        currency,
+        groupId: groupId,
+        memberId: payedBy ? payedBy.id : undefined,
+        membersSharing: {
+          set: sharedBy.map((member) => ({ id: member.id })),
+        },
+      },
+    });
+
+    const expenseResponse = await prisma.expense.findUnique({
+      include: {
+        membersSharing: { select: { id: true, name: true } },
+      },
+      where: {
+        id: expense.id,
+      },
+    });
+
+    return Response.json({ status: "success", data: expenseResponse });
+  } catch (error) {
+    console.error("Failed to create expense:", error);
+    return Response.json({
+      status: "failed",
+      msg: "Failed to create expense.",
+    });
+  }
+}

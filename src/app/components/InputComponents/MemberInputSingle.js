@@ -28,7 +28,14 @@ function SelectOption({ color, name, dropdown }) {
   );
 }
 
-export function MemberInputSingle({ members, colors, label, form, disabled }) {
+export function MemberInputSingle({
+  members,
+  colors,
+  label,
+  form,
+  disabled,
+  defaultValue = null,
+}) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
@@ -79,6 +86,7 @@ export function MemberInputSingle({ members, colors, label, form, disabled }) {
           rightSection={<Combobox.Chevron />}
           onClick={() => combobox.toggleDropdown()}
           rightSectionPointerEvents="none"
+          defaultValue={defaultValue}
           value={selectedValue}
           multiline
         >
@@ -86,6 +94,12 @@ export function MemberInputSingle({ members, colors, label, form, disabled }) {
             <SelectOption
               name={selectedOption.name}
               color={colors[selectedOption.id % colors.length]}
+              dropdown={false}
+            />
+          ) : defaultValue ? (
+            <SelectOption
+              name={defaultValue.name}
+              color={colors[defaultValue.id % colors.length]}
               dropdown={false}
             />
           ) : (
