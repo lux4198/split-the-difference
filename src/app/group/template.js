@@ -10,6 +10,11 @@ import { membersAtom, viewMemberAtomWithPersistence } from "./groupAtoms";
 import { memberColors } from "../lib/utils";
 import MemberBadge from "../components/memberBadge";
 import { useEscClose } from "../hooks";
+import {
+  IconArrowAutofitDown,
+  IconArrowDown,
+  IconCaretDown,
+} from "@tabler/icons-react";
 
 function Template({ children }) {
   const { status: sessionStatus } = useSession();
@@ -24,15 +29,17 @@ function Template({ children }) {
       <TopNavWrap>
         <Flex gap={"15px"} align={"center"}>
           <Popover
-            width={200}
+            width={150}
             position="bottom"
             shadow="md"
             opened={viewMemberDrop}
+            offset={1}
           >
             <Popover.Target>
               <div
-                onClick={() => setViewMemberDrop(!viewMemberDrop)}
-                className="cursor-pointer"
+                onMouseEnter={() => setViewMemberDrop(true)}
+                onMouseLeave={() => setViewMemberDrop(false)}
+                className="cursor-pointer flex items-end"
               >
                 <MemberBadge
                   name={viewMember.name}
@@ -40,25 +47,40 @@ function Template({ children }) {
                   disableTooltip
                   size={"lg"}
                 />
+                <IconCaretDown
+                  size={12}
+                  className={
+                    "transition " + (viewMemberDrop ? "rotate-180" : "")
+                  }
+                />
               </div>
             </Popover.Target>
-            <Popover.Dropdown>
+            <Popover.Dropdown
+              onMouseEnter={() => setViewMemberDrop(true)}
+              onMouseLeave={() => setViewMemberDrop(false)}
+            >
               {members && (
-                <div className="">
-                  <div className="absolute top-0 right-0">
-                    <CloseButton onClick={() => setViewMemberDrop(false)} />
-                  </div>
-                  <MemberInputSingle
-                    required={false}
-                    label={"Select Member"}
-                    members={members}
-                    colors={memberColors}
-                    onChange={(val) => {
-                      setViewMember(val);
-                      setViewMemberDrop(false);
-                    }}
-                    defaultValue={viewMember}
-                  />
+                <div className={"flex flex-col max-h-[200px] overflow-y-auto"}>
+                  {members
+                    .filter((member) => member.id !== viewMember.id)
+                    .map((member) => (
+                      <div
+                        className="cursor-pointer flex items-center gap-2 p-1 pl-2 hover:bg-gray-200
+                    dark:hover:bg-gray-700
+                    "
+                        onClick={() => {
+                          setViewMember(member);
+                          setViewMemberDrop(false);
+                        }}
+                      >
+                        <MemberBadge
+                          name={member.name}
+                          color={memberColors[member.id % memberColors.length]}
+                          disableTooltip
+                        />
+                        <span>{member.name}</span>
+                      </div>
+                    ))}
                 </div>
               )}
             </Popover.Dropdown>
