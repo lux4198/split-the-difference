@@ -69,11 +69,11 @@ function Page() {
             <div className="flex flex-col pb-3 border-solid border-0 border-b-2 dark:border-white border-black">
               {Object.keys(viewMemberBalance)
                 .filter((id) => viewMemberBalance[id] < 0)
-                .map((id) => {
+                .map((id, idx) => {
                   const value = viewMemberBalance[id];
                   return (
                     value && (
-                      <span>
+                      <span key={"balanceowed" + idx}>
                         You owe {getMemberByID(members, id).name}{" "}
                         {Math.abs(value)} {currencyData[baseCurr].symbol}
                       </span>
@@ -84,11 +84,11 @@ function Page() {
             <div className="flex flex-col pt-3">
               {Object.keys(viewMemberBalance)
                 .filter((id) => viewMemberBalance[id] > 0)
-                .map((id) => {
+                .map((id, idx) => {
                   const value = viewMemberBalance[id];
                   return (
                     value && (
-                      <span>
+                      <span key={"balancepayed" + idx}>
                         {getMemberByID(members, id).name} owes you {value}{" "}
                         {currencyData[baseCurr].symbol}
                       </span>

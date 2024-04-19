@@ -53,11 +53,7 @@ const netOwesAtom = atom(async (get) => {
 });
 const paymentsAtom = atom(null);
 
-const viewMemberAtom = atom(
-  typeof window !== "undefined" && localStorage.getItem("viewMember") != null
-    ? JSON.parse(localStorage.getItem("viewMember"))
-    : null,
-);
+const viewMemberAtom = atom({});
 
 const viewMemberAtomWithPersistence = atom(
   (get) => get(viewMemberAtom),
