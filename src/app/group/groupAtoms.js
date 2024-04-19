@@ -1,6 +1,6 @@
 "use client";
 
-import { atom, useAtomValue } from "jotai";
+import { atom } from "jotai";
 import { calculateNetOwes } from "../lib/calcUtils";
 
 const groupInfoAtom = atom(null);
@@ -54,7 +54,7 @@ const netOwesAtom = atom(async (get) => {
 const paymentsAtom = atom(null);
 
 const viewMemberAtom = atom(
-  localStorage.getItem("viewMember") != null
+  typeof window !== "undefined" && localStorage.getItem("viewMember") != null
     ? JSON.parse(localStorage.getItem("viewMember"))
     : null,
 );
