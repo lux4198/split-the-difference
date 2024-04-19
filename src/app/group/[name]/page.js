@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import ExpenseCard from "@/app/components/ExpenseCard";
 import { IconTablePlus } from "@tabler/icons-react";
 import CreateModal from "@/app/components/CreateModal";
-import CreateExpenseForm from "@/app/components/inputComponents/expense/CreateExpenseForm";
+import CreateExpenseForm from "@/app/components/InputComponents/expense/CreateExpenseForm";
 import { useDisclosure } from "@mantine/hooks";
 import { useOutsideAlerter, useEscClose } from "@/app/hooks";
 import { useAtom, useAtomValue } from "jotai";

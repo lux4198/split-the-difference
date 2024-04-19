@@ -14,8 +14,8 @@ import { IconUsersGroup, IconEdit, IconTrash } from "@tabler/icons-react";
 import CreateModal from "./CreateModal";
 import { useDisclosure } from "@mantine/hooks";
 import { useRef, useState } from "react";
-import ExpenseDeleteForm from "@/app/components/inputComponents/expense/ExpenseDeleteForm";
-import ExpenseEditForm from "@/app/components/inputComponents/expense/ExpenseEditForm";
+import ExpenseDeleteForm from "@/app/components/InputComponents/expense/ExpenseDeleteForm";
+import ExpenseEditForm from "@/app/components/InputComponents/expense/ExpenseEditForm";
 import { useEscClose } from "../hooks";
 
 function ExpenseCard({

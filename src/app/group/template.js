@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import { Button, CloseButton, Flex, Popover, Tabs } from "@mantine/core";
 import { signOut, useSession } from "next-auth/react";
 import TopNavWrap from "@/app/components/TopNavWrap";
-import { MemberInputSingle } from "../components/inputComponents/MemberInputSingle";
 import { useAtom, useAtomValue } from "jotai";
 import { membersAtom, viewMemberAtomWithPersistence } from "./groupAtoms";
 import { memberColors } from "../lib/utils";
