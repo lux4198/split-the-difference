@@ -1,14 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Button, CloseButton, Flex, Popover } from "@mantine/core";
+import { Button, CloseButton, Flex, Popover, Tabs } from "@mantine/core";
 import { signOut, useSession } from "next-auth/react";
-import TopNavWrap from "@/app/components/topNavWrap";
+import TopNavWrap from "@/app/components/TopNavWrap";
 import { MemberInputSingle } from "../components/inputComponents/memberInputSingle";
 import { useAtom, useAtomValue } from "jotai";
 import { membersAtom, viewMemberAtomWithPersistence } from "./groupAtoms";
 import { memberColors } from "../lib/utils";
-import MemberBadge from "../components/memberBadge";
+import MemberBadge from "@/app/components/MemberBadge";
 import { useEscClose } from "../hooks";
 import {
   IconArrowAutofitDown,
@@ -39,6 +39,7 @@ function Template({ children }) {
               <div
                 onMouseEnter={() => setViewMemberDrop(true)}
                 onMouseLeave={() => setViewMemberDrop(false)}
+                onTouchEnd={() => setViewMemberDrop(!viewMemberDrop)}
                 className="cursor-pointer flex items-end"
               >
                 <MemberBadge
@@ -98,7 +99,7 @@ function Template({ children }) {
           </Button>
         </Flex>
       </TopNavWrap>
-      <main className="p-5 pb-[100px]">{children}</main>
+      <main className="pb-[100px]">{children}</main>
       <footer className="absolute bottom-0 p-5">
         <a href="https://www.exchangerate-api.com">
           Rates By Exchange Rate API

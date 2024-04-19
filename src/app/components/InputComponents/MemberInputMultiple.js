@@ -7,7 +7,7 @@ import {
   Flex,
   Checkbox,
 } from "@mantine/core";
-import MemberBadge from "../memberBadge";
+import MemberBadge from "../MemberBadge";
 import { IconCheck } from "@tabler/icons-react";
 
 function SelectOption({ color, name, dropdown }) {

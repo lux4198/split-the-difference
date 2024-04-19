@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Combobox, Input, useCombobox, Flex, TextInput } from "@mantine/core";
-import MemberBadge from "../memberBadge";
+import MemberBadge from "../MemberBadge";
 import { IconCheck } from "@tabler/icons-react";
 
 function SelectOption({ color, name, dropdown, selected }) {

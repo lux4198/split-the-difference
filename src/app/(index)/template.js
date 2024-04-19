@@ -3,13 +3,13 @@
 import { Button, Flex } from "@mantine/core";
 import { useEscClose } from "../hooks";
 import { useDisclosure } from "@mantine/hooks";
-import CreateModal from "../components/createModal";
-import CreateGroupForm from "../components/createGroupForm";
+import CreateModal from "@app/components/CreateModal";
+import CreateGroupForm from "@app/components/CreateGroupForm";
 import { useRef, useState } from "react";
 import { useOutsideAlerter } from "../hooks";
-import LoginForm from "../components/loginForm";
+import LoginForm from "@app/components/LoginForm";
 import { signOut, useSession } from "next-auth/react";
-import TopNavWrap from "../components/topNavWrap";
+import TopNavWrap from "@app/components/TopNavWrap";
 import Link from "next/link";
 
 function Template({ children }) {

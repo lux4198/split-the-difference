@@ -9,9 +9,9 @@ import {
 } from "@mantine/core";
 import moment from "moment";
 import { memberColors } from "@/app/lib/utils";
-import MemberBadge from "./memberBadge";
+import MemberBadge from "./MemberBadge";
 import { IconUsersGroup, IconEdit, IconTrash } from "@tabler/icons-react";
-import CreateModal from "./createModal";
+import CreateModal from "./CreateModal";
 import { useDisclosure } from "@mantine/hooks";
 import { useRef, useState } from "react";
 import ExpenseDeleteForm from "./inputComponents/expense/expenseDeleteForm";
