@@ -9,13 +9,13 @@ import {
 } from "@mantine/core";
 import moment from "moment";
 import { memberColors } from "@/app/lib/utils";
-import MemberBadge from "./MemberBadge";
+import MemberBadge from "@/app/components/MemberBadge";
 import { IconUsersGroup, IconEdit, IconTrash } from "@tabler/icons-react";
 import CreateModal from "./CreateModal";
 import { useDisclosure } from "@mantine/hooks";
 import { useRef, useState } from "react";
-import ExpenseDeleteForm from "./inputComponents/expense/expenseDeleteForm";
-import ExpenseEditForm from "./inputComponents/expense/expenseEditForm";
+import ExpenseDeleteForm from "@/app/components/inputComponents/expense/ExpenseDeleteForm";
+import ExpenseEditForm from "@/app/components/inputComponents/expense/ExpenseEditForm";
 import { useEscClose } from "../hooks";
 
 function ExpenseCard({
