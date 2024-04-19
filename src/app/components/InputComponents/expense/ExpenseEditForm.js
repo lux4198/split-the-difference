@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ExpenseFormBase from "./expenseFormBase";
+import ExpenseFormBase from "./ExpenseFormBase";
 import { useForm } from "@mantine/form";
 import { useAtomValue, useAtom } from "jotai";
 import { membersAtom, expensesAtom } from "@/app/group/groupAtoms";
