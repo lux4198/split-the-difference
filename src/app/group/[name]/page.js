@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { Button, Text } from "@mantine/core";
+import { ActionIcon, Badge, Button, Text } from "@mantine/core";
 import { useSession } from "next-auth/react";
 import ExpenseCard from "@/app/components/ExpenseCard";
-import { IconTablePlus } from "@tabler/icons-react";
+import { IconMinus, IconTablePlus } from "@tabler/icons-react";
 import CreateModal from "@/app/components/CreateModal";
 import CreateExpenseForm from "@/app/components/InputComponents/expense/CreateExpenseForm";
 import { useDisclosure } from "@mantine/hooks";
@@ -23,6 +23,12 @@ import { createPortal } from "react-dom";
 import { getMemberByID } from "../selectors";
 import { currencyData } from "@/app/lib/currencyData";
 import SideNav from "./SideNav";
+import MainPageWrap from "../MainPageWrap";
+import { getSumOfArray } from "@/app/lib/calcUtils";
+import MemberBadge from "@/app/components/MemberBadge";
+import { memberColors } from "@/app/lib/utils";
+import BalancePage from "./BalancePage";
+import PaymentsPage from "../PaymentsPage";
 
 function Page() {
   const { data: session, status } = useSession();
@@ -32,11 +38,16 @@ function Page() {
   const [groupInfo, setGroupInfo] = useAtom(groupInfoAtom);
   const baseCurr = useAtomValue(groupBaseCurrAtom);
 
+  const [navSelected, setNavSelected] = useState("expenses");
+  const isNavSelected = (nav) => {
+    return navSelected === nav;
+  };
   const [opened, { close, toggle }] = useDisclosure(false);
   const modalRef = useRef(null);
   const [formActive, setFormActive] = useState(false);
   const [showSucessAlert, setShowSuccessAlert] = useState(false);
   const [successAlertTitle, setSuccessAlertTitle] = useState("");
+  const [expenseCreateDefault, setExpenseCreateDefault] = useState({});
   useOutsideAlerter(modalRef, opened && !formActive, close);
   useEscClose(opened, close);
 
@@ -51,57 +62,19 @@ function Page() {
     session && fetchData();
   }, [session]);
 
-  const netOwes = useAtomValue(netOwesAtom);
-  let viewMemberBalance;
-  if (netOwes && viewMember) {
-    viewMemberBalance = netOwes[viewMember.id];
-  }
+  useEffect(() => {
+    if (!opened) {
+      setExpenseCreateDefault({});
+    }
+  }, [opened]);
 
   return (
-    <main className="flex flex-col">
-      <SideNav />
-      <div
-        className={"mx-auto flex-auto w-full max-w-[600px] p-5 lg:p-12 pt-5"}
-      >
-        <h2 className="font-medium w-full">Your Balance</h2>
-        {members && viewMemberBalance && (
-          <div className="w-full p-5">
-            <div className="flex flex-col pb-3 border-solid border-0 border-b-2 dark:border-white border-black">
-              {Object.keys(viewMemberBalance)
-                .filter((id) => viewMemberBalance[id] < 0)
-                .map((id, idx) => {
-                  const value = viewMemberBalance[id];
-                  return (
-                    value && (
-                      <span key={"balanceowed" + idx}>
-                        You owe {getMemberByID(members, id).name}{" "}
-                        {Math.abs(value)} {currencyData[baseCurr].symbol}
-                      </span>
-                    )
-                  );
-                })}
-            </div>
-            <div className="flex flex-col pt-3">
-              {Object.keys(viewMemberBalance)
-                .filter((id) => viewMemberBalance[id] > 0)
-                .map((id, idx) => {
-                  const value = viewMemberBalance[id];
-                  return (
-                    value && (
-                      <span key={"balancepayed" + idx}>
-                        {getMemberByID(members, id).name} owes you {value}{" "}
-                        {currencyData[baseCurr].symbol}
-                      </span>
-                    )
-                  );
-                })}
-            </div>
-          </div>
-        )}
-        {expenses && (
-          <div className="mt-5 m-auto">
-            <div className="flex justify-between mb-5">
-              <h2 className={"font-medium mb-3"}>Group Expenses</h2>
+    <main className="flex flex-col md:flex-row md:min-h-[100vh]">
+      <SideNav navSelected={navSelected} setNavSelected={setNavSelected} />
+      <div className={"mx-auto flex-auto w-full p-5 m-auto md:m-0 md:ml-10"}>
+        {isNavSelected("expenses") && expenses && (
+          <MainPageWrap title={"Group Expenses"}>
+            <div className="mt-5 mb-5 m-auto">
               {members && (
                 <Button
                   rightSection={<IconTablePlus size={14} />}
@@ -112,6 +85,7 @@ function Page() {
               )}
             </div>
             {expenses
+              .filter((e) => e.type !== "payment")
               .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
               .map((expense) => (
                 <ExpenseCard
@@ -122,7 +96,26 @@ function Page() {
                   setSuccessAlertTitle={setSuccessAlertTitle}
                 />
               ))}
-          </div>
+          </MainPageWrap>
+        )}
+        {isNavSelected("balance") && (
+          <>
+            <MainPageWrap title={"Your Balance"}>
+              <BalancePage
+                members={members}
+                toggleExpenseInput={toggle}
+                setExpenseCreateDefault={setExpenseCreateDefault}
+              />
+            </MainPageWrap>
+          </>
+        )}
+        {isNavSelected("payments") && (
+          <MainPageWrap title={"Your Payments"}>
+            <PaymentsPage toggleExpenseInput={toggle} members={members} />
+          </MainPageWrap>
+        )}
+        {isNavSelected("settings") && (
+          <MainPageWrap title={"Group Settings"}></MainPageWrap>
         )}
         <CreateModal modalRef={modalRef} opened={opened} close={close}>
           {opened && (
@@ -131,6 +124,9 @@ function Page() {
               setFormActive={setFormActive}
               setShowSuccessAlert={setShowSuccessAlert}
               setSuccessAlertTitle={setSuccessAlertTitle}
+              isPayment={isNavSelected("payments") || isNavSelected("balance")}
+              defaultValues={expenseCreateDefault}
+              setDefaultValues={setExpenseCreateDefault}
             />
           )}
         </CreateModal>

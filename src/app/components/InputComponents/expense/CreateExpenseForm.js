@@ -8,6 +8,7 @@ import {
   groupBaseCurrAtom,
   groupIdAtom,
   membersAtom,
+  viewMemberAtom,
 } from "../../../group/groupAtoms";
 import { useFocusWithin } from "@mantine/hooks";
 import { useEffect } from "react";
@@ -18,9 +19,13 @@ function CreateExpenseForm({
   close,
   setShowSuccessAlert,
   setSuccessAlertTitle,
+  isPayment,
+  defaultValues,
+  setDefaultValues,
 }) {
   const groupId = useAtomValue(groupIdAtom);
   const members = useAtomValue(membersAtom);
+  const viewMember = useAtomValue(viewMemberAtom);
   const [expenses, setExpenses] = useAtom(expensesAtom);
   const baseCurrency = useAtomValue(groupBaseCurrAtom);
   const { ref, focused } = useFocusWithin();
@@ -38,13 +43,20 @@ function CreateExpenseForm({
     initialValues: {
       currency: baseCurrency,
       groupId: groupId,
+      value: defaultValues.value ?? null,
+      sharedBy: defaultValues.sharedBy ?? null,
+      payedBy: isPayment ? viewMember : null,
+      type: isPayment ? "payment" : "",
+      name: isPayment ? "payment" : "",
     },
     validate: {
       payedBy: (val) => (val ? null : " "),
+      sharedBy: (val) => (val && val.length > 0 && val[0] != null ? null : " "),
     },
   });
 
   const handleSubmit = (values) => {
+    setDefaultValues({});
     const postData = async (values) => {
       const response = await fetch("/api/group/expense", {
         method: "POST",
@@ -59,9 +71,13 @@ function CreateExpenseForm({
         setExpenses([...expenses, result.data]);
         setShowSuccessAlert(true);
         setSuccessAlertTitle(
-          `Successfully created Expense ${result.data.name}.`,
+          isPayment
+            ? `Successfully added Payment.`
+            : `Successfully created Expense ${result.data.name}.`,
         );
         close();
+      } else {
+        setLoading(false);
       }
     };
     setLoading(true);
@@ -73,7 +89,11 @@ function CreateExpenseForm({
       handleSubmit={handleSubmit}
       loading={loading}
       setFormActive={setFormActive}
-      submitButtonText={"Create Expense"}
+      submitButtonText={isPayment ? "Make Payment" : "Create Expense"}
+      isPayment={isPayment}
+      defaultValues={
+        isPayment ? { payedBy: viewMember, ...defaultValues } : null
+      }
     />
   );
 }

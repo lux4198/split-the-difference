@@ -35,4 +35,12 @@ const roundToDigit = (num, digits = 2) => {
   return Math.round(num * multiplier) / multiplier;
 };
 
-export { calculateNetOwes, roundToDigit, convertCurrency };
+const getSumOfArray = (arr) => {
+  let sum = 0;
+  for (let i = 0; i < arr.length; i++) {
+    sum += arr[i];
+  }
+  return sum;
+};
+
+export { calculateNetOwes, roundToDigit, convertCurrency, getSumOfArray };

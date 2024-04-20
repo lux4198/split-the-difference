@@ -43,6 +43,7 @@ export function MemberInputSingle({
   disabled,
   defaultValue = null,
   required = true,
+  error = false,
 }) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -93,6 +94,7 @@ export function MemberInputSingle({
       >
         <Combobox.Target>
           <TextInput
+            error={error}
             disabled={disabled}
             required={required}
             label={label}

@@ -36,7 +36,7 @@ function ExpenseCard({
   useEscClose(opened, close);
   return (
     <Card
-      className={"m-auto mb-4 dark:text-white"}
+      className={"mb-4 dark:text-white max-w-[600px]"}
       styles={{ root: { backgroundColor: "rgba(159, 203, 209, .3)" } }}
       shadow="sm"
       padding="lg"

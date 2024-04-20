@@ -3,9 +3,9 @@ import { prisma } from "@/app/lib/db";
 export async function POST(request) {
   const req = await request.json();
 
-  const { currency, sharedBy, payedBy, name, value, groupId } = req;
+  const { currency, sharedBy, payedBy, name, value, groupId, type } = req;
 
-  if (!currency || !sharedBy || !payedBy || !name || !value) {
+  if (!currency || !sharedBy || !payedBy || !name || !value || !groupId) {
     return Response.json({
       status: "failed",
       msg: "One or more missing fields.",
@@ -17,6 +17,7 @@ export async function POST(request) {
       data: {
         name,
         value,
+        type,
         currency,
         groupId: groupId,
         memberId: payedBy.id,
