@@ -2,13 +2,21 @@
 
 import { useAtomValue } from "jotai";
 import { expensesAtom, viewMemberAtomWithPersistence } from "./groupAtoms";
-import { IconCreditCardPay } from "@tabler/icons-react";
+import {
+  IconCreditCardPay,
+  IconSquareRoundedChevronsRightFilled,
+} from "@tabler/icons-react";
 import { Button } from "@mantine/core";
 import PaymentCard from "../components/PaymentCard";
 import { getMemberByID } from "./selectors";
-import moment from "moment";
 
-function PaymentsPage({ toggleExpenseInput, members }) {
+function PaymentsPage({
+  toggleExpenseInput,
+  members,
+  setAction,
+  open,
+  setExpenseSelected,
+}) {
   const viewMember = useAtomValue(viewMemberAtomWithPersistence);
   const expenses = useAtomValue(expensesAtom);
   const payments = expenses
@@ -36,12 +44,17 @@ function PaymentsPage({ toggleExpenseInput, members }) {
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           .map((payment) => (
             <PaymentCard
+              payment={payment}
               memberFrom={getMemberByID(members, payment.memberId)}
               memberTo={payment.membersSharing[0]}
               value={payment.value}
               date={payment.createdAt}
               currency={payment.currency}
               positive={payment.memberId !== viewMember.id}
+              key={"payment" + payment.id}
+              setAction={setAction}
+              open={open}
+              setExpenseSelected={setExpenseSelected}
             />
           ))
       ) : (

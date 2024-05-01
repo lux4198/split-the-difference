@@ -11,6 +11,7 @@ function ExpenseDeleteForm({
   closeModal,
   setShowSuccessAlert,
   setSuccessAlertTitle,
+  expenseType,
 }) {
   const [expenses, setExpenses] = useAtom(expensesAtom);
   const [error, setError] = useState(false);
@@ -34,7 +35,11 @@ function ExpenseDeleteForm({
         setLoading(false);
         setExpenses(expenses.filter((expense) => expense.id !== expenseId));
         closeModal();
-        setSuccessAlertTitle(`Successfully deleted Expense ${expenseName}.`);
+        setSuccessAlertTitle(
+          `Successfully deleted ${
+            expenseType === "payment" ? "payment" : `expense: ${expenseName}`
+          }.`,
+        );
         setShowSuccessAlert(true);
       } else {
         setLoading(false);
@@ -46,12 +51,18 @@ function ExpenseDeleteForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <p>Are you sure you want to delete the expense: {expenseName} ?</p>
+      <p>
+        Are you sure you want to delete the{" "}
+        {expenseType === "payment" ? "payment" : `expense: ${expenseName}`}?
+      </p>
       <Button color={"red"} type="submit" loading={loading}>
-        Delete Expense
+        Delete {expenseType === "payment" ? "Payment" : "Expense"}
       </Button>
       {error && (
-        <Text color="red">There was an error deleting the expense.</Text>
+        <Text c="red">
+          There was an error deleting the{" "}
+          {expenseType === "payment" ? "payment" : "expense"}.
+        </Text>
       )}
     </form>
   );

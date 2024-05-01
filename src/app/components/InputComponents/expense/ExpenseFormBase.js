@@ -129,7 +129,11 @@ export default function ExpenseFormBase({
         )}
         <Grid.Col span={12}>
           <Button type="submit" loading={loading}>
-            {isPayment ? <IconCreditCardPay /> : <span>submitButtonText</span>}
+            {isPayment ? (
+              <IconCreditCardPay />
+            ) : (
+              <span>{submitButtonText}</span>
+            )}
           </Button>
         </Grid.Col>
       </Grid>

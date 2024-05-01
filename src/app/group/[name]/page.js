@@ -29,6 +29,8 @@ import MemberBadge from "@/app/components/MemberBadge";
 import { memberColors } from "@/app/lib/utils";
 import BalancePage from "./BalancePage";
 import PaymentsPage from "../PaymentsPage";
+import ExpenseDeleteForm from "@/app/components/InputComponents/expense/ExpenseDeleteForm";
+import ExpenseEditForm from "@/app/components/InputComponents/expense/ExpenseEditForm";
 
 function Page() {
   const { data: session, status } = useSession();
@@ -43,6 +45,14 @@ function Page() {
     return navSelected === nav;
   };
   const [opened, { close, toggle }] = useDisclosure(false);
+  const [
+    expenseOpened,
+    { close: expenseClose, toggle: expenseToggle, open: expenseOpen },
+  ] = useDisclosure(false);
+  const [editFormActive, setEditFormActive] = useState(false);
+  const [expenseAction, setExpenseAction] = useState("");
+  const [expenseSelected, setExpenseSelected] = useState(null);
+
   const modalRef = useRef(null);
   const [formActive, setFormActive] = useState(false);
   const [showSucessAlert, setShowSuccessAlert] = useState(false);
@@ -94,6 +104,11 @@ function Page() {
                   members={members}
                   setShowSuccessAlert={setShowSuccessAlert}
                   setSuccessAlertTitle={setSuccessAlertTitle}
+                  setAction={setExpenseAction}
+                  setExpenseSelected={setExpenseSelected}
+                  open={expenseOpen}
+                  close={expenseClose}
+                  opened={expenseOpened}
                 />
               ))}
           </MainPageWrap>
@@ -111,7 +126,13 @@ function Page() {
         )}
         {isNavSelected("payments") && (
           <MainPageWrap title={"Your Payments"}>
-            <PaymentsPage toggleExpenseInput={toggle} members={members} />
+            <PaymentsPage
+              toggleExpenseInput={toggle}
+              members={members}
+              setAction={setExpenseAction}
+              open={expenseOpen}
+              setExpenseSelected={setExpenseSelected}
+            />
           </MainPageWrap>
         )}
         {isNavSelected("settings") && (
@@ -130,6 +151,34 @@ function Page() {
             />
           )}
         </CreateModal>
+        {expenseOpened && (
+          <CreateModal
+            modalRef={modalRef}
+            close={expenseClose}
+            opened={expenseOpened}
+          >
+            {expenseAction === "edit" ? (
+              <ExpenseEditForm
+                expense={expenseSelected}
+                setFormActive={setEditFormActive}
+                close={expenseClose}
+                setShowSuccessAlert={setShowSuccessAlert}
+                setSuccessAlertTitle={setSuccessAlertTitle}
+              />
+            ) : (
+              expenseAction === "delete" && (
+                <ExpenseDeleteForm
+                  closeModal={expenseClose}
+                  expenseId={expenseSelected.id}
+                  expenseName={expenseSelected.name}
+                  expenseType={expenseSelected.type}
+                  setShowSuccessAlert={setShowSuccessAlert}
+                  setSuccessAlertTitle={setSuccessAlertTitle}
+                />
+              )
+            )}
+          </CreateModal>
+        )}
         {showSucessAlert &&
           createPortal(
             <div className="fixed bottom-3 right-10">

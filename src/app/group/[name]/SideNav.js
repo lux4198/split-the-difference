@@ -16,7 +16,7 @@ const SideNavTab = ({ value, children }) => {
   );
 };
 
-function SideNav({ className, navSelected, setNavSelected }) {
+function SideNav({ className = "", navSelected, setNavSelected }) {
   const isDesktop = useMediaQuery("(min-width : 768px)");
   const isMobile = useMediaQuery("(max-width : 440px)");
   return (
@@ -35,19 +35,19 @@ function SideNav({ className, navSelected, setNavSelected }) {
       >
         <Tabs.List className="ml-auto" justify={isDesktop ? "" : "center"}>
           <SideNavTab value="expenses">
-            <IconMoneybag className={!isMobile && "mr-2"} />{" "}
+            <IconMoneybag className={!isMobile ? "mr-2" : ""} />{" "}
             {!isMobile && "Expenses"}
           </SideNavTab>
           <SideNavTab value="balance">
-            <IconScale className={!isMobile && "mr-2"} />{" "}
+            <IconScale className={!isMobile ? "mr-2" : ""} />{" "}
             {!isMobile && "Balance"}
           </SideNavTab>
           <SideNavTab value="payments">
-            <IconCreditCard className={!isMobile && "mr-2"} />{" "}
+            <IconCreditCard className={!isMobile ? "mr-2" : ""} />{" "}
             {!isMobile && "Payments"}
           </SideNavTab>
           <SideNavTab value="settings">
-            <IconSettings className={!isMobile && "mr-2"} />{" "}
+            <IconSettings className={!isMobile ? "mr-2" : ""} />{" "}
             {!isMobile && "Settings"}
           </SideNavTab>
         </Tabs.List>

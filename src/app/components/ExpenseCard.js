@@ -21,18 +21,17 @@ import { useEscClose } from "../hooks";
 function ExpenseCard({
   expense,
   members,
-  setShowSuccessAlert,
-  setSuccessAlertTitle,
+  open,
+  opened,
+  close,
+  setExpenseSelected,
+  setAction,
 }) {
-  const [opened, { close, toggle, open }] = useDisclosure(false);
-  const modalRef = useRef(null);
   const date = moment(expense.createdAt);
   const parsedDate = date.format("MMM Do YYYY");
   const payedByMember = members.find(
     (member) => member.id === expense.memberId,
   );
-  const [action, setAction] = useState("");
-  const [editFormActive, setEditFormActive] = useState(false);
   useEscClose(opened, close);
   return (
     <Card
@@ -55,6 +54,7 @@ function ExpenseCard({
             onClick={() => {
               open();
               setAction("edit");
+              setExpenseSelected(expense);
             }}
           >
             <IconEdit size={17} />
@@ -66,6 +66,7 @@ function ExpenseCard({
             onClick={() => {
               open();
               setAction("delete");
+              setExpenseSelected(expense);
             }}
           >
             <IconTrash size={17} />
@@ -102,29 +103,6 @@ function ExpenseCard({
           <span className="ml-2">(All)</span>
         )}
       </div>
-      {opened && (
-        <CreateModal close={close} opened={opened}>
-          {action === "edit" ? (
-            <ExpenseEditForm
-              expense={expense}
-              setFormActive={setEditFormActive}
-              close={close}
-              setShowSuccessAlert={setShowSuccessAlert}
-              setSuccessAlertTitle={setSuccessAlertTitle}
-            />
-          ) : (
-            action === "delete" && (
-              <ExpenseDeleteForm
-                closeModal={close}
-                expenseId={expense.id}
-                expenseName={expense.name}
-                setShowSuccessAlert={setShowSuccessAlert}
-                setSuccessAlertTitle={setSuccessAlertTitle}
-              />
-            )
-          )}
-        </CreateModal>
-      )}
     </Card>
   );
 }
