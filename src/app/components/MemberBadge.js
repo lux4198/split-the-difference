@@ -4,8 +4,10 @@ function MemberBadge({
   color,
   name,
   className,
+  classNameWrap,
   disableTooltip = false,
   size = "md",
+  onClick,
 }) {
   return (
     <Tooltip label={name} disabled={disableTooltip}>
@@ -15,6 +17,7 @@ function MemberBadge({
         variant="filled"
         circle
         color={color}
+        onClick={onClick}
       >
         {name.slice(0, 2)}
       </Badge>

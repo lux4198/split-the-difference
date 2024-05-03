@@ -31,11 +31,12 @@ import BalancePage from "./BalancePage";
 import PaymentsPage from "../PaymentsPage";
 import ExpenseDeleteForm from "@/app/components/InputComponents/expense/ExpenseDeleteForm";
 import ExpenseEditForm from "@/app/components/InputComponents/expense/ExpenseEditForm";
+import LoadingCard from "@/app/components/Shared/LoadingCard";
 
 function Page() {
   const { data: session, status } = useSession();
   const [members, setMembers] = useAtom(membersAtom);
-  const viewMember = useAtomValue(viewMemberAtom);
+  const [viewMember, setViewMember] = useAtom(viewMemberAtom);
   const [expenses, setExpenses] = useAtom(expensesAtom);
   const [groupInfo, setGroupInfo] = useAtom(groupInfoAtom);
   const baseCurr = useAtomValue(groupBaseCurrAtom);
@@ -48,6 +49,10 @@ function Page() {
   const [
     expenseOpened,
     { close: expenseClose, toggle: expenseToggle, open: expenseOpen },
+  ] = useDisclosure(false);
+  const [
+    viewMemberOpened,
+    { close: viewMemberClose, toggle: viewMemberToggle, open: viewMemberOpen },
   ] = useDisclosure(false);
   const [editFormActive, setEditFormActive] = useState(false);
   const [expenseAction, setExpenseAction] = useState("");
@@ -78,39 +83,57 @@ function Page() {
     }
   }, [opened]);
 
+  useEffect(() => {
+    if (Object.keys(viewMember).length === 0) {
+      viewMemberOpen();
+    } else {
+      viewMemberClose();
+    }
+  }, [viewMember]);
+
   return (
     <main className="flex flex-col md:flex-row md:min-h-[100vh]">
       <SideNav navSelected={navSelected} setNavSelected={setNavSelected} />
       <div className={"mx-auto flex-auto w-full p-5 m-auto md:m-0 md:ml-10"}>
-        {isNavSelected("expenses") && expenses && (
+        {isNavSelected("expenses") && (
           <MainPageWrap title={"Group Expenses"}>
-            <div className="mt-5 mb-5 m-auto">
-              {members && (
-                <Button
-                  rightSection={<IconTablePlus size={14} />}
-                  onClick={toggle}
-                >
-                  Add Expense
-                </Button>
-              )}
-            </div>
-            {expenses
-              .filter((e) => e.type !== "payment")
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-              .map((expense) => (
-                <ExpenseCard
-                  key={expense.name + expense.id}
-                  expense={expense}
-                  members={members}
-                  setShowSuccessAlert={setShowSuccessAlert}
-                  setSuccessAlertTitle={setSuccessAlertTitle}
-                  setAction={setExpenseAction}
-                  setExpenseSelected={setExpenseSelected}
-                  open={expenseOpen}
-                  close={expenseClose}
-                  opened={expenseOpened}
-                />
-              ))}
+            {expenses && (
+              <div className="mt-5 mb-5 m-auto">
+                {members && (
+                  <Button
+                    rightSection={<IconTablePlus size={14} />}
+                    onClick={toggle}
+                  >
+                    Add Expense
+                  </Button>
+                )}
+              </div>
+            )}
+            {expenses ? (
+              expenses
+                .filter((e) => e.type !== "payment")
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .map((expense) => (
+                  <ExpenseCard
+                    key={expense.name + expense.id}
+                    expense={expense}
+                    members={members}
+                    setShowSuccessAlert={setShowSuccessAlert}
+                    setSuccessAlertTitle={setSuccessAlertTitle}
+                    setAction={setExpenseAction}
+                    setExpenseSelected={setExpenseSelected}
+                    open={expenseOpen}
+                    close={expenseClose}
+                    opened={expenseOpened}
+                  />
+                ))
+            ) : (
+              <div className="mt-4">
+                {[...new Array(10)].map((num, idx) => (
+                  <LoadingCard key={"expenseLoader" + idx} />
+                ))}
+              </div>
+            )}
           </MainPageWrap>
         )}
         {isNavSelected("balance") && (
@@ -177,6 +200,36 @@ function Page() {
                 />
               )
             )}
+          </CreateModal>
+        )}
+        {members && viewMemberOpened && (
+          <CreateModal
+            modalRef={modalRef}
+            close={viewMemberClose}
+            opened={viewMemberOpened}
+          >
+            <span className="mb-4">Select Member</span>
+            <div className="w-fit h-fit flex gap-2 max-w-[200px] flex-wrap">
+              {members.map((member) => {
+                return (
+                  <div
+                    key={"modalMemberSelect" + member.id}
+                    className="cursor-pointer"
+                  >
+                    <MemberBadge
+                      classNameWrap={"cursor-pointer"}
+                      color={memberColors[member.id % memberColors.length]}
+                      name={member.name}
+                      size="lg"
+                      onClick={() => {
+                        setViewMember(member);
+                        viewMemberClose();
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </CreateModal>
         )}
         {showSucessAlert &&
