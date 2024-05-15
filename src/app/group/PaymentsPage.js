@@ -25,7 +25,7 @@ function PaymentsPage({
   return (
     <>
       {members && (
-        <div className="mt-2 mb-5">
+        <div className="mb-5">
           <Button
             rightSection={<IconCreditCardPay size={14} />}
             onClick={toggleExpenseInput}

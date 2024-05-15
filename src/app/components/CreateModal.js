@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Overlay, CloseButton, Card } from "@mantine/core";
 
-function CreateModal({ opened, close, children, modalRef }) {
+function CreateModal({ opened, close, children, modalRef, withClose = true }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function CreateModal({ opened, close, children, modalRef }) {
           <Overlay
             style={{ zIndex: "10", position: "fixed" }}
             color="#000"
-            backgroundOpacity={0.85}
+            backgroundOpacity={0.87}
           />
         )}
         <div
@@ -30,9 +30,11 @@ function CreateModal({ opened, close, children, modalRef }) {
           }
         >
           <Card style={{ padding: "1.5rem" }}>
-            <div className={"absolute top-0 right-0 "}>
-              <CloseButton aria-label="Close modal" onClick={close} />
-            </div>
+            {withClose && (
+              <div className={"absolute top-0 right-0 "}>
+                <CloseButton aria-label="Close modal" onClick={close} />
+              </div>
+            )}
             {children}
           </Card>
         </div>

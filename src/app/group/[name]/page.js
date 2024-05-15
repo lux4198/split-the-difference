@@ -13,10 +13,10 @@ import { useAtom, useAtomValue } from "jotai";
 import {
   expensesAtom,
   groupBaseCurrAtom,
+  groupIdAtom,
   groupInfoAtom,
   membersAtom,
-  netOwesAtom,
-  viewMemberAtom,
+  viewMemberAtomWithPersistence,
 } from "../groupAtoms";
 import SuccessAlert from "@/app/components/SuccessAlert";
 import { createPortal } from "react-dom";
@@ -27,16 +27,18 @@ import MainPageWrap from "../MainPageWrap";
 import { getSumOfArray } from "@/app/lib/calcUtils";
 import MemberBadge from "@/app/components/MemberBadge";
 import { memberColors } from "@/app/lib/utils";
-import BalancePage from "./BalancePage";
+import BalancePage from "../BalancePage";
 import PaymentsPage from "../PaymentsPage";
 import ExpenseDeleteForm from "@/app/components/InputComponents/expense/ExpenseDeleteForm";
 import ExpenseEditForm from "@/app/components/InputComponents/expense/ExpenseEditForm";
 import LoadingCard from "@/app/components/Shared/LoadingCard";
+import SettingsPage from "../SettingsPage";
 
 function Page() {
   const { data: session, status } = useSession();
+  const groupId = useAtomValue(groupIdAtom);
   const [members, setMembers] = useAtom(membersAtom);
-  const [viewMember, setViewMember] = useAtom(viewMemberAtom);
+  const [viewMember, setViewMember] = useAtom(viewMemberAtomWithPersistence);
   const [expenses, setExpenses] = useAtom(expensesAtom);
   const [groupInfo, setGroupInfo] = useAtom(groupInfoAtom);
   const baseCurr = useAtomValue(groupBaseCurrAtom);
@@ -98,7 +100,7 @@ function Page() {
         {isNavSelected("expenses") && (
           <MainPageWrap title={"Group Expenses"}>
             {expenses && (
-              <div className="mt-5 mb-5 m-auto">
+              <div className="mb-5 m-auto">
                 {members && (
                   <Button
                     rightSection={<IconTablePlus size={14} />}
@@ -158,8 +160,10 @@ function Page() {
             />
           </MainPageWrap>
         )}
-        {isNavSelected("settings") && (
-          <MainPageWrap title={"Group Settings"}></MainPageWrap>
+        {isNavSelected("settings") && members && (
+          <MainPageWrap title={"Group Settings"}>
+            <SettingsPage members={members} groupId={groupId} />
+          </MainPageWrap>
         )}
         <CreateModal modalRef={modalRef} opened={opened} close={close}>
           {opened && (
@@ -207,6 +211,7 @@ function Page() {
             modalRef={modalRef}
             close={viewMemberClose}
             opened={viewMemberOpened}
+            withClose={false}
           >
             <span className="mb-4">Select Member</span>
             <div className="w-fit h-fit flex gap-2 max-w-[200px] flex-wrap">

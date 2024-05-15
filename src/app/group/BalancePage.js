@@ -6,8 +6,8 @@ import { currencyData } from "@/app/lib/currencyData";
 import { memberColors } from "@/app/lib/utils";
 import React from "react";
 import { useAtomValue } from "jotai";
-import { netOwesAtom, viewMemberAtom, groupBaseCurrAtom } from "../groupAtoms";
-import { getMemberByID } from "../selectors";
+import { netOwesAtom, viewMemberAtom, groupBaseCurrAtom } from "./groupAtoms";
+import { getMemberByID } from "./selectors";
 import { ActionIcon, Badge, Button } from "@mantine/core";
 import { IconCreditCardPay } from "@tabler/icons-react";
 import HoverPopover from "@/app/components/Shared/HoverPopover";
@@ -26,6 +26,7 @@ function BalancePage({ members, toggleExpenseInput, setExpenseCreateDefault }) {
       getSumOfArray(Object.values(viewMemberBalance).filter((val) => val > 0)),
     );
   }
+  console.log(netOwes);
 
   return (
     <>
