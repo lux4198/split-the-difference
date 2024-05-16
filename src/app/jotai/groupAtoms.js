@@ -37,7 +37,7 @@ const transactionsAtom = atom((get) => {
         expense.membersSharing.map((member) => [
           expense.memberId,
           member.id,
-          expense.value,
+          expense.value / expense.membersSharing.length,
           expense.currency,
         ]),
       )

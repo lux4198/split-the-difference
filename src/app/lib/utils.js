@@ -14,4 +14,8 @@ const memberColors = [
   "ocean-blue",
 ];
 
-export { memberColors };
+const hasKeys = (obj) => {
+  return obj && Object.keys(obj).length > 0;
+};
+
+export { memberColors, hasKeys };

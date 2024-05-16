@@ -3,7 +3,7 @@
 import MemberBadge from "@/app/components/Member/MemberBadge";
 import { getSumOfArray, roundToDigit } from "@/app/lib/calcUtils";
 import { currencyData } from "@/app/lib/currencyData";
-import { memberColors } from "@/app/lib/utils";
+import { hasKeys, memberColors } from "@/app/lib/utils";
 import React from "react";
 import { useAtomValue } from "jotai";
 import {
@@ -21,7 +21,7 @@ function BalancePage({ members, toggleExpenseInput, setExpenseCreateDefault }) {
   const viewMember = useAtomValue(viewMemberAtom);
   const baseCurr = useAtomValue(groupBaseCurrAtom);
   let viewMemberBalance, totalOwed, totalOwe;
-  if (netOwes && viewMember) {
+  if (netOwes && hasKeys(netOwes) && viewMember && netOwes[viewMember.id]) {
     viewMemberBalance = netOwes[viewMember.id];
     totalOwe = Math.abs(
       getSumOfArray(Object.values(viewMemberBalance).filter((val) => val < 0)),

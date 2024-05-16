@@ -23,7 +23,10 @@ function PaymentsPage({
   const viewMember = useAtomValue(viewMemberAtomWithPersistence);
   const expenses = useAtomValue(expensesAtom);
   const payments = expenses
-    ? expenses.filter(({ type }) => type === "payment")
+    ? expenses.filter(
+        ({ type, membersSharing }) =>
+          type === "payment" && membersSharing.length > 0,
+      )
     : [];
   return (
     <>

@@ -1,20 +1,7 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/app/lib/db";
 import bcrypt from "bcrypt";
 import { z } from "zod";
-
-prisma.$extends({
-  query: {
-    group: {
-      $allOperations({ operation, args, query }) {
-        if (["create", "update"].includes(operation) && args.data["password"]) {
-          args.data["password"] = bcrypt.hashSync(args.data["password"], 10);
-        }
-        return query(args);
-      },
-    },
-  },
-});
 
 export async function POST(request) {
   const res = await request.json();
@@ -27,11 +14,14 @@ export async function POST(request) {
       let msg = "Password has to have a minimum length of 6 characters.";
       return Response.json({ status: "failed", msg: msg, code: code });
     }
+
+    const password = bcrypt.hashSync(res.password, 10);
+
     await prisma.group.create({
       data: {
         email: res.email,
         name: res.name,
-        password: res.password,
+        password: password,
       },
     });
 

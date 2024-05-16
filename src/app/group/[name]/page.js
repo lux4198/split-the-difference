@@ -32,7 +32,9 @@ import PaymentsPage from "./pages/PaymentsPage";
 import ExpenseDeleteForm from "@/app/components/Expense/ExpenseDeleteForm";
 import ExpenseEditForm from "@/app/components/Expense/ExpenseEditForm";
 import LoadingCard from "@/app/components/Shared/LoadingCardSkeleton";
-import SettingsPage from "../SettingsPage";
+import SettingsPage from "./pages/SettingsPage";
+import MemberSelectCreateModal from "@/app/components/Member/MemberSelectCreateModal";
+import MemberDeleteForm from "@/app/components/Member/MemberDeleteForm";
 
 function Page() {
   const { data: session, status } = useSession();
@@ -53,12 +55,18 @@ function Page() {
     { close: expenseClose, toggle: expenseToggle, open: expenseOpen },
   ] = useDisclosure(false);
   const [
+    memberOpened,
+    { close: memberClose, toggle: memberToggle, open: memberOpen },
+  ] = useDisclosure(false);
+  const [
     viewMemberOpened,
     { close: viewMemberClose, toggle: viewMemberToggle, open: viewMemberOpen },
   ] = useDisclosure(false);
   const [editFormActive, setEditFormActive] = useState(false);
   const [expenseAction, setExpenseAction] = useState("");
+  const [memberAction, setMemberAction] = useState("");
   const [expenseSelected, setExpenseSelected] = useState(null);
+  const [memberSelected, setMemberSelected] = useState(null);
 
   const modalRef = useRef(null);
   const [formActive, setFormActive] = useState(false);
@@ -80,18 +88,31 @@ function Page() {
   }, [session]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`/api/group/?name=${session.user.name}`);
+      const newData = await response.json();
+      setExpenses(newData.expenses);
+    };
+    session && fetchData();
+  }, [session, members]);
+
+  useEffect(() => {
     if (!opened) {
       setExpenseCreateDefault({});
     }
   }, [opened]);
 
   useEffect(() => {
-    if (Object.keys(viewMember).length === 0) {
+    if (
+      Object.keys(viewMember).length === 0 ||
+      !(viewMember && viewMember.groupId === groupId) ||
+      !members.find(({ id }) => id === viewMember.id)
+    ) {
       viewMemberOpen();
     } else {
       viewMemberClose();
     }
-  }, [viewMember]);
+  }, [viewMember, groupId, members]);
 
   return (
     <main className="flex flex-col md:flex-row md:min-h-[100vh]">
@@ -162,7 +183,13 @@ function Page() {
         )}
         {isNavSelected("settings") && members && (
           <MainPageWrap title={"Group Settings"}>
-            <SettingsPage members={members} groupId={groupId} />
+            <SettingsPage
+              members={members}
+              groupId={groupId}
+              open={memberOpen}
+              setAction={setMemberAction}
+              setMemberSelected={setMemberSelected}
+            />
           </MainPageWrap>
         )}
         <CreateModal modalRef={modalRef} opened={opened} close={close}>
@@ -206,6 +233,23 @@ function Page() {
             )}
           </CreateModal>
         )}
+        {memberOpened && (
+          <CreateModal
+            modalRef={modalRef}
+            close={memberClose}
+            opened={memberOpened}
+          >
+            {memberAction === "delete" && (
+              <MemberDeleteForm
+                closeModal={memberClose}
+                memberId={memberSelected.id}
+                memberName={memberSelected.name}
+                setShowSuccessAlert={setShowSuccessAlert}
+                setSuccessAlertTitle={setSuccessAlertTitle}
+              />
+            )}
+          </CreateModal>
+        )}
         {members && viewMemberOpened && (
           <CreateModal
             modalRef={modalRef}
@@ -213,28 +257,11 @@ function Page() {
             opened={viewMemberOpened}
             withClose={false}
           >
-            <span className="mb-4">Select Member</span>
-            <div className="w-fit h-fit flex gap-2 max-w-[200px] flex-wrap">
-              {members.map((member) => {
-                return (
-                  <div
-                    key={"modalMemberSelect" + member.id}
-                    className="cursor-pointer"
-                  >
-                    <MemberBadge
-                      classNameWrap={"cursor-pointer"}
-                      color={memberColors[member.id % memberColors.length]}
-                      name={member.name}
-                      size="lg"
-                      onClick={() => {
-                        setViewMember(member);
-                        viewMemberClose();
-                      }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
+            <MemberSelectCreateModal
+              members={members}
+              setViewMember={setViewMember}
+              viewMemberClose={viewMemberClose}
+            />
           </CreateModal>
         )}
         {showSucessAlert &&

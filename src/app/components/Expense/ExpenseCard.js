@@ -77,8 +77,12 @@ function ExpenseCard({
         <Flex align={"baseline"}>
           <span className="text-start w-fit ml-1">
             <MemberBadge
-              color={memberColors[payedByMember.id % memberColors.length]}
-              name={payedByMember.name}
+              color={
+                payedByMember
+                  ? memberColors[payedByMember.id % memberColors.length]
+                  : "gray"
+              }
+              name={payedByMember ? payedByMember.name : ""}
               className={"mr-2"}
             />
             payed:{" "}

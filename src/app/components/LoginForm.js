@@ -18,10 +18,11 @@ function LoginForm() {
 
   const handleLogin = (values) => {
     startTransition(() => {
-      authenticate({}, values, "/group/lukas").then((value) => {
+      authenticate({}, values, `/group/${values.name}`).then((value) => {
         // catch login error
         if (value && value.status === "failed") {
           setLoginStatus(value);
+          console.log(value);
         }
       });
     });

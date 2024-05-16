@@ -21,6 +21,7 @@ function CreateMemberForm({ groupId }) {
         },
         body: JSON.stringify({ ...values, groupId: groupId }),
       });
+      setLoading(true);
       const result = await response.json();
       if (result.status === "success") {
         setLoading(false);
@@ -39,18 +40,18 @@ function CreateMemberForm({ groupId }) {
         form.validate();
         handleSubmit(values);
       })}
-      className="flex items-center gap-6"
+      className="flex items-center gap-6 w-full"
     >
-      <ActionIcon type="submit">
+      <ActionIcon type="submit" loading={loading}>
         <IconPlus />
       </ActionIcon>
       <TextInput
-        // disabled={loading}
+        disabled={loading}
         required
         placeholder="Name"
         // defaultValue={defaultValues ? defaultValues.name : null}
         {...form.getInputProps("name")}
-        className="w-1/3"
+        className="w-full max-w-[400px]"
       />
     </form>
   );
