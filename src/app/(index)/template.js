@@ -3,8 +3,8 @@
 import { Button, Flex } from "@mantine/core";
 import { useEscClose } from "../hooks";
 import { useDisclosure } from "@mantine/hooks";
-import CreateModal from "@/app/components/CreateModal";
-import CreateGroupForm from "@/app/components/CreateGroupForm";
+import CreateModal from "@/app/components/Shared/CreateModal";
+import CreateGroupForm from "@/app/components/Group/CreateGroupForm";
 import { useRef, useState } from "react";
 import { useOutsideAlerter } from "../hooks";
 import LoginForm from "@/app/components/LoginForm";

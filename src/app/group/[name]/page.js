@@ -3,10 +3,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ActionIcon, Badge, Button, Text } from "@mantine/core";
 import { useSession } from "next-auth/react";
-import ExpenseCard from "@/app/components/ExpenseCard";
+import ExpenseCard from "@/app/components/Expense/ExpenseCard";
 import { IconMinus, IconTablePlus } from "@tabler/icons-react";
-import CreateModal from "@/app/components/CreateModal";
-import CreateExpenseForm from "@/app/components/InputComponents/expense/CreateExpenseForm";
+import CreateModal from "@/app/components/Shared/CreateModal";
+import CreateExpenseForm from "@/app/components/Expense/CreateExpenseForm";
 import { useDisclosure } from "@mantine/hooks";
 import { useOutsideAlerter, useEscClose } from "@/app/hooks";
 import { useAtom, useAtomValue } from "jotai";
@@ -17,21 +17,21 @@ import {
   groupInfoAtom,
   membersAtom,
   viewMemberAtomWithPersistence,
-} from "../groupAtoms";
-import SuccessAlert from "@/app/components/SuccessAlert";
+} from "../../jotai/groupAtoms";
+import SuccessAlert from "@/app/components/Shared/SuccessAlert";
 import { createPortal } from "react-dom";
 import { getMemberByID } from "../selectors";
 import { currencyData } from "@/app/lib/currencyData";
 import SideNav from "./SideNav";
 import MainPageWrap from "../MainPageWrap";
 import { getSumOfArray } from "@/app/lib/calcUtils";
-import MemberBadge from "@/app/components/MemberBadge";
+import MemberBadge from "@/app/components/Member/MemberBadge";
 import { memberColors } from "@/app/lib/utils";
-import BalancePage from "../BalancePage";
-import PaymentsPage from "../PaymentsPage";
-import ExpenseDeleteForm from "@/app/components/InputComponents/expense/ExpenseDeleteForm";
-import ExpenseEditForm from "@/app/components/InputComponents/expense/ExpenseEditForm";
-import LoadingCard from "@/app/components/Shared/LoadingCard";
+import BalancePage from "./pages/BalancePage";
+import PaymentsPage from "./pages/PaymentsPage";
+import ExpenseDeleteForm from "@/app/components/Expense/ExpenseDeleteForm";
+import ExpenseEditForm from "@/app/components/Expense/ExpenseEditForm";
+import LoadingCard from "@/app/components/Shared/LoadingCardSkeleton";
 import SettingsPage from "../SettingsPage";
 
 function Page() {

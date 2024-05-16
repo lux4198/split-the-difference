@@ -5,9 +5,12 @@ import { Button, CloseButton, Flex, Popover, Tabs } from "@mantine/core";
 import { signOut, useSession } from "next-auth/react";
 import TopNavWrap from "@/app/components/TopNavWrap";
 import { useAtom, useAtomValue } from "jotai";
-import { membersAtom, viewMemberAtomWithPersistence } from "./groupAtoms";
+import {
+  membersAtom,
+  viewMemberAtomWithPersistence,
+} from "../jotai/groupAtoms";
 import { memberColors } from "../lib/utils";
-import MemberBadge from "@/app/components/MemberBadge";
+import MemberBadge from "@/app/components/Member/MemberBadge";
 import { useEscClose } from "../hooks";
 import { IconCaretDown } from "@tabler/icons-react";
 
