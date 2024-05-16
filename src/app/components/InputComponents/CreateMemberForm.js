@@ -1,6 +1,6 @@
 "use client";
 
-import { membersAtom } from "@/app/group/groupAtoms";
+import { membersAtom } from "@/app/jotai/groupAtoms";
 import { ActionIcon, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconPlus } from "@tabler/icons-react";
