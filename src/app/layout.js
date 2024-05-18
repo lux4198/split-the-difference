@@ -9,6 +9,7 @@ import {
   createTheme,
 } from "@mantine/core";
 import { SessionProvider } from "next-auth/react";
+import { Analytics } from "@vercel/analytics/react";
 
 const theme = createTheme({
   fontFamily: "Open Sans, sans-serif",
@@ -46,6 +47,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <SessionProvider>
+      <Analytics />
       <html lang="en">
         <head>
           <ColorSchemeScript />
