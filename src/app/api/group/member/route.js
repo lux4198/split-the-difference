@@ -1,9 +1,14 @@
 import { prisma } from "@/app/lib/db";
+import { auth } from "@/auth";
 
-export async function POST(request) {
+export async function POST(request, response) {
   const req = await request.json();
 
   const { name, groupId } = req;
+
+  const session = await auth();
+  if (!session || session.user.id != groupId)
+    return Response.json({ msg: "Invalid request.", status: "failed" });
 
   if (!name || !groupId) {
     return Response.json({
@@ -36,13 +41,23 @@ export async function POST(request) {
   }
 }
 
-export async function DELETE(request) {
+export async function DELETE(request, response) {
+  const session = await auth();
   const req = await request.json(); // Get the member ID from the query params
   const { id } = req;
+
   try {
-    const member = await prisma.member.delete({
+    let member = await prisma.member.findUnique({
       where: { id: id },
     });
+
+    if (!session || session.user.id != member.groupId)
+      return Response.json({ msg: "Invalid request.", status: "failed" });
+
+    member = await prisma.member.delete({
+      where: { id: id },
+    });
+
     return Response.json({
       msg: "Member deleted successfully",
       status: "success",

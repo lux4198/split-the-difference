@@ -1,9 +1,13 @@
 import { prisma } from "@/app/lib/db";
+import { auth } from "@/auth";
 
 export async function POST(request) {
   const req = await request.json();
-
   const { currency, sharedBy, payedBy, name, value, groupId, type } = req;
+
+  const session = await auth();
+  if (!session || session.user.id != groupId)
+    return Response.json({ msg: "Invalid request.", status: "failed" });
 
   if (!currency || !sharedBy || !payedBy || !name || !value || !groupId) {
     return Response.json({
@@ -49,10 +53,20 @@ export async function POST(request) {
 export async function DELETE(request) {
   const req = await request.json(); // Get the expense ID from the query params
   const { id } = req;
+  const session = await auth();
+
   try {
-    const expense = await prisma.expense.delete({
+    let expense = await prisma.expense.findUnique({
       where: { id: id },
     });
+
+    if (!session || session.user.id != expense.groupId)
+      return Response.json({ msg: "Invalid request.", status: "failed" });
+
+    expense = await prisma.expense.delete({
+      where: { id: id },
+    });
+
     return Response.json({
       msg: "Expense deleted successfully",
       status: "success",
@@ -70,9 +84,18 @@ export async function DELETE(request) {
 export async function PATCH(request) {
   const req = await request.json();
   const { id, currency, sharedBy, payedBy, name, value, groupId } = req;
-
+  const session = await auth();
   try {
-    const expense = await prisma.expense.update({
+    let expense = await prisma.expense.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!session || session.user.id != expense.groupId)
+      return Response.json({ msg: "Invalid request.", status: "failed" });
+
+    expense = await prisma.expense.update({
       where: {
         id: id,
       },

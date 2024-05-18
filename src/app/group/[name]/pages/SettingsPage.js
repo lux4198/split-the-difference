@@ -1,10 +1,18 @@
 "use client";
 
-import { Accordion, ActionIcon } from "@mantine/core";
+import { Accordion, ActionIcon, Card, Button } from "@mantine/core";
 import CreateMemberForm from "../../../components/InputComponents/CreateMemberForm";
 import { memberColors } from "@/app/lib/utils";
 import MemberBadge from "@/app/components/Member/MemberBadge";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import {
+  groupIdAtom,
+  viewMemberAtomWithPersistence,
+} from "@/app/jotai/groupAtoms";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 function SettingsPage({
   members,
@@ -13,11 +21,36 @@ function SettingsPage({
   setAction,
   setMemberSelected,
 }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const setViewMember = useSetAtom(viewMemberAtomWithPersistence);
+  const handleGroupDelete = () => {
+    const fetchData = async () => {
+      const response = await fetch("/api/group/", {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: groupId,
+        }),
+      });
+      const result = await response.json();
+      setLoading(false);
+      if (result && result.status === "success") {
+        setViewMember({});
+        signOut();
+        router.push("/");
+      }
+    };
+    setLoading(true);
+    groupId && fetchData();
+  };
   return (
-    <div className="max-w-[700px] w-full">
+    <div className="max-w-[700px] w-full flex flex-col gap-12">
       <Accordion variant="contained">
         <Accordion.Item value="member">
-          <Accordion.Control icon={<IconEdit stroke={"gray-200"} />}>
+          <Accordion.Control icon={<IconEdit />}>
             Edit Members
           </Accordion.Control>
           <Accordion.Panel>
@@ -51,6 +84,28 @@ function SettingsPage({
             <div className="flex w-full flex-col gap-2 pt-4">
               <div>+ Add new Member</div>
               <CreateMemberForm groupId={groupId} />
+            </div>
+          </Accordion.Panel>
+        </Accordion.Item>
+        <Accordion.Item value="delete group">
+          <Accordion.Control icon={<IconTrash />}>
+            <span className="text-lg">Delete Group</span>
+          </Accordion.Control>
+          <Accordion.Panel>
+            <div className="flex flex-col gap-3">
+              <span className="pb-3">
+                All information related to this group will be deleted. This
+                action cannot be undone.
+              </span>
+              <div>
+                <Button
+                  loading={loading}
+                  color="red"
+                  onClick={() => handleGroupDelete()}
+                >
+                  Delete Group
+                </Button>
+              </div>
             </div>
           </Accordion.Panel>
         </Accordion.Item>

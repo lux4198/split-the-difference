@@ -18,6 +18,9 @@ export const {
       return isLoggedIn;
     },
     async session({ token, session }) {
+      if (session?.user) {
+        session.user.id = token.sub;
+      }
       return session;
     },
     async jwt({ token }) {

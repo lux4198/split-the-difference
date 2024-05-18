@@ -6,6 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import TopNavWrap from "@/app/components/TopNavWrap";
 import { useAtom, useAtomValue } from "jotai";
 import {
+  groupInfoAtom,
   membersAtom,
   viewMemberAtomWithPersistence,
 } from "../jotai/groupAtoms";
@@ -16,6 +17,7 @@ import { IconCaretDown } from "@tabler/icons-react";
 
 function Template({ children }) {
   const { status: sessionStatus } = useSession();
+  const group = useAtomValue(groupInfoAtom);
   const members = useAtomValue(membersAtom);
   const [viewMember, setViewMember] = useAtom(viewMemberAtomWithPersistence);
   const [viewMemberDrop, setViewMemberDrop] = useState(false);
@@ -35,6 +37,7 @@ function Template({ children }) {
     <>
       <TopNavWrap>
         <Flex gap={"15px"} align={"center"}>
+          {group && <span>Group: {group.name}</span>}
           <Popover
             width={150}
             position="bottom"
@@ -50,10 +53,12 @@ function Template({ children }) {
                 className="cursor-pointer flex items-end"
               >
                 <MemberBadge
-                  name={viewMember.name ?? "?"}
+                  name={viewMember && viewMember.name ? viewMember.name : "?"}
                   color={
                     memberColors[
-                      viewMember.id ? viewMember.id % memberColors.length : 0
+                      viewMember && viewMember.id
+                        ? viewMember.id % memberColors.length
+                        : 0
                     ]
                   }
                   disableTooltip

@@ -17,7 +17,7 @@ export async function POST(request) {
 
     const password = bcrypt.hashSync(res.password, 10);
 
-    await prisma.group.create({
+    const group = await prisma.group.create({
       data: {
         email: res.email,
         name: res.name,
@@ -29,6 +29,7 @@ export async function POST(request) {
       status: "success",
       msg: "Group added successfully.",
       code: code,
+      data: group,
     });
   } catch (e) {
     let msg = "There was an error processing the request.";

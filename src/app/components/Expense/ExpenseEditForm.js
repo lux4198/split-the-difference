@@ -28,7 +28,6 @@ function ExpenseEditForm({
       });
       const result = await response.json();
       if (result.status === "success") {
-        setLoading(false);
         setExpenses([
           ...expenses.filter((exp) => exp.id !== expense.id),
           result.data,
@@ -38,6 +37,8 @@ function ExpenseEditForm({
           `Successfully edited Expense ${result.data.name}.`,
         );
         close();
+      } else {
+        setLoading(false);
       }
     };
     setLoading(true);
