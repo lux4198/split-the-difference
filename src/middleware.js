@@ -9,7 +9,13 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const isOnIndex = nextUrl.pathname === "/";
   const isOnGroupNew = nextUrl.pathname.startsWith("/api/group/new");
-  if (!isOnGroupNew && !isOnIndex && !isLoggedIn) {
+  const isOnGroup = nextUrl.pathname.startsWith("/group/");
+  const isOnUserGroup =
+    isLoggedIn && nextUrl.pathname === `/group/${req.auth.user.name}`;
+  if (
+    (!isOnGroupNew && !isOnIndex && !isLoggedIn) ||
+    (isLoggedIn && isOnGroup && !isOnUserGroup)
+  ) {
     return Response.redirect(new URL("/", nextUrl));
   }
 });
