@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "./app/lib/db";
+import { KyselyAdapter } from "@auth/kysely-adapter";
+import { db } from "./db";
 
 export const {
   handlers: { GET, POST },
@@ -27,7 +27,7 @@ export const {
       return token;
     },
   },
-  adapter: PrismaAdapter(prisma),
+  adapter: KyselyAdapter(db),
   session: { strategy: "jwt" },
   ...authConfig,
 });

@@ -1,21 +1,7 @@
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { prisma } from "./app/lib/db";
-
-async function getGroup(name) {
-  try {
-    const group = await prisma.group.findUnique({
-      where: {
-        name: name,
-      },
-    });
-    return group;
-  } catch (error) {
-    console.error("Failed to fetch group:", error);
-    throw new Error("Failed to fetch group.");
-  }
-}
+import { getGroup } from "@/app/lib/dbUtils";
 
 export const authConfig = {
   providers: [

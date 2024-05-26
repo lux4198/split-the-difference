@@ -79,6 +79,7 @@ function CreateExpenseForm({
       } else {
         setLoading(false);
       }
+      console.log(result);
     };
     setLoading(true);
     postData(values);

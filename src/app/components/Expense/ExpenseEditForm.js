@@ -16,7 +16,9 @@ function ExpenseEditForm({
   const payedByMember = members.find(
     (member) => member.id === expense.memberId,
   );
-  const form = useForm();
+  const form = useForm({
+    initialValues: { ...expense, payedBy: { id: expense.memberId } },
+  });
   const handleSubmit = (values) => {
     const patchData = async (values) => {
       const response = await fetch("/api/group/expense", {

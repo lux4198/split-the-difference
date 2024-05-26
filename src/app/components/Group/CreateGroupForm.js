@@ -43,6 +43,7 @@ export default function CreateGroupForm({ onSubmit, close }) {
         setPostErr(res.code);
         setErrMsg(res.msg);
         setLoading(false);
+        console.log(res);
       }
       if (res.status === "success") {
         setSuccess(true);

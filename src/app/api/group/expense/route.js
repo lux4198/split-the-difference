@@ -1,5 +1,5 @@
-import { prisma } from "@/app/lib/db";
 import { auth } from "@/auth";
+import { db } from "@/db";
 
 export async function POST(request) {
   const req = await request.json();
@@ -17,35 +17,44 @@ export async function POST(request) {
   }
 
   try {
-    const expense = await prisma.expense.create({
-      data: {
-        name,
-        value,
-        type,
-        currency,
+    const expense = await db
+      .insertInto("Expense")
+      .values({
+        name: name,
+        type: type,
+        value: value,
+        currency: currency,
         groupId: groupId,
         memberId: payedBy.id,
-        membersSharing: {
-          connect: sharedBy.map((member) => ({ id: member.id })),
-        },
-      },
-    });
+      })
+      .returningAll()
+      .executeTakeFirst();
 
-    const expenseResponse = await prisma.expense.findUnique({
-      include: {
-        membersSharing: { select: { id: true, name: true } },
-      },
-      where: {
-        id: expense.id,
-      },
-    });
+    console.log(expense);
 
-    return Response.json({ status: "success", data: expenseResponse });
+    // A = expense.id,  B = member.id
+    const membersSharingIds = await db
+      .insertInto("_MemberExpensesShared")
+      .values(sharedBy.map(({ id }) => ({ A: expense.id, B: id })))
+      .returningAll()
+      .executeTakeFirst();
+
+    const membersSharing = await db
+      .selectFrom("Member")
+      .innerJoin("_MemberExpensesShared", "B", "id")
+      .select(["id", "name", "groupId"])
+      .where("A", "=", expense.id)
+      .execute();
+
+    expense["membersSharing"] = membersSharing;
+
+    return Response.json({ status: "success", data: expense });
   } catch (error) {
     console.error("Failed to create expense:", error);
     return Response.json({
       status: "failed",
       msg: "Failed to create expense.",
+      error: error,
     });
   }
 }
@@ -56,16 +65,16 @@ export async function DELETE(request) {
   const session = await auth();
 
   try {
-    let expense = await prisma.expense.findUnique({
-      where: { id: id },
-    });
+    let expense = await db
+      .selectFrom("Expense")
+      .select(["groupId"])
+      .where("id", "=", id)
+      .executeTakeFirst();
 
     if (!session || session.user.id != expense.groupId)
       return Response.json({ msg: "Invalid request.", status: "failed" });
 
-    expense = await prisma.expense.delete({
-      where: { id: id },
-    });
+    await db.deleteFrom("Expense").where("id", "=", id).execute();
 
     return Response.json({
       msg: "Expense deleted successfully",
@@ -86,41 +95,56 @@ export async function PATCH(request) {
   const { id, currency, sharedBy, payedBy, name, value, groupId } = req;
   const session = await auth();
   try {
-    let expense = await prisma.expense.findUnique({
-      where: {
-        id: id,
-      },
-    });
+    let expense = await db
+      .selectFrom("Expense")
+      .select(["groupId"])
+      .where("id", "=", id)
+      .executeTakeFirst();
 
     if (!session || session.user.id != expense.groupId)
       return Response.json({ msg: "Invalid request.", status: "failed" });
 
-    expense = await prisma.expense.update({
-      where: {
-        id: id,
-      },
-      data: {
-        name,
-        value,
-        currency,
-        groupId: groupId,
-        memberId: payedBy ? payedBy.id : undefined,
-        membersSharing: {
-          set: sharedBy.map((member) => ({ id: member.id })),
-        },
-      },
+    expense = await db
+      .updateTable("Expense")
+      .set({
+        currency: currency,
+        memberId: payedBy.id,
+        name: name,
+        value: value,
+      })
+      .where("id", "=", id)
+      .returningAll()
+      .executeTakeFirst();
+
+    // A = expense.id,  B = member.id
+    const membersSharingIds = await db
+      .selectFrom("_MemberExpensesShared")
+      .select("B")
+      .where("A", "=", expense.id)
+      .execute();
+
+    sharedBy.forEach(async ({ id }) => {
+      if (!membersSharingIds.map(({ B }) => B).includes(id)) {
+        await db
+          .insertInto("_MemberExpensesShared")
+          .values({ A: expense.id, B: id })
+          .execute();
+      }
     });
 
-    const expenseResponse = await prisma.expense.findUnique({
-      include: {
-        membersSharing: { select: { id: true, name: true } },
-      },
-      where: {
-        id: expense.id,
-      },
+    membersSharingIds.forEach(async ({ B: id }) => {
+      if (!sharedBy.map(({ id }) => id).includes(id)) {
+        await db
+          .deleteFrom("_MemberExpensesShared")
+          .where("A", "=", expense.id)
+          .where("B", "=", id)
+          .execute();
+      }
     });
 
-    return Response.json({ status: "success", data: expenseResponse });
+    expense["membersSharing"] = sharedBy;
+
+    return Response.json({ status: "success", data: expense });
   } catch (error) {
     console.error("Failed to create expense:", error);
     return Response.json({

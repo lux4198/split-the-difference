@@ -132,7 +132,7 @@ function Page() {
                 )}
               </div>
             )}
-            {expenses ? (
+            {members && expenses ? (
               expenses
                 .filter((e) => e.type !== "payment")
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))

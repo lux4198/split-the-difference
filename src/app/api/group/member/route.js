@@ -1,5 +1,5 @@
-import { prisma } from "@/app/lib/db";
 import { auth } from "@/auth";
+import { db } from "@/db";
 
 export async function POST(request, response) {
   const req = await request.json();
@@ -18,20 +18,16 @@ export async function POST(request, response) {
   }
 
   try {
-    const member = await prisma.member.create({
-      data: {
-        name,
+    const member = await db
+      .insertInto("Member")
+      .values({
         groupId: groupId,
-      },
-    });
+        name: name,
+      })
+      .returningAll()
+      .executeTakeFirst();
 
-    const memberResponse = await prisma.member.findUnique({
-      where: {
-        id: member.id,
-      },
-    });
-
-    return Response.json({ status: "success", data: memberResponse });
+    return Response.json({ status: "success", data: member });
   } catch (error) {
     console.error("Failed to create member:", error);
     return Response.json({
@@ -47,16 +43,15 @@ export async function DELETE(request, response) {
   const { id } = req;
 
   try {
-    let member = await prisma.member.findUnique({
-      where: { id: id },
-    });
-
+    let member = await db
+      .selectFrom("Member")
+      .select(["id", "groupId"])
+      .where("id", "=", id)
+      .executeTakeFirst();
     if (!session || session.user.id != member.groupId)
       return Response.json({ msg: "Invalid request.", status: "failed" });
 
-    member = await prisma.member.delete({
-      where: { id: id },
-    });
+    await db.deleteFrom("Member").where("id", "=", id).executeTakeFirst();
 
     return Response.json({
       msg: "Member deleted successfully",

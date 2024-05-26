@@ -38,6 +38,7 @@ function MemberDeleteForm({
         setSuccessAlertTitle(`Successfully deleted Member ${memberName}.`);
         setShowSuccessAlert(true);
       } else {
+        console.log(result);
         setLoading(false);
         setError(true);
       }

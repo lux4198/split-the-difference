@@ -19,7 +19,7 @@ function MemberBadge({
         color={color}
         onClick={onClick}
       >
-        {name.slice(0, 2)}
+        {name ? name.slice(0, 2) : ""}
       </Badge>
     </Tooltip>
   );
